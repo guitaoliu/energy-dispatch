@@ -1,7 +1,7 @@
 import * as ffi from 'ffi-napi'
 import * as ref from 'ref-napi'
-import * as StructType from 'ref-struct-di'
-import * as ArrayType from 'ref-array-di'
+import StructType from 'ref-struct-di'
+import ArrayType from 'ref-array-di'
 
 // types definition
 const INT = ref.types.int
@@ -81,7 +81,7 @@ export const FILTER_RECORD = StructType({
   End: DWORD,
 })
 
-export default ECanVic = ffi.Library(`./ECanVic64.dll`, {
+const ECANVic = ffi.Library(`../ECanVic64.dll`, {
   // EXTERNC DllAPI DWORD CALL OpenDevice(DWORD DeviceType, DWORD DeviceInd, DWORD Reserved);
   OpenDevice: [DWORD, [DWORD, DWORD, DWORD]],
   // EXTERNC DllAPI DWORD CALL CloseDevice(DWORD DeviceType, DWORD DeviceInd);
@@ -111,3 +111,5 @@ export default ECanVic = ffi.Library(`./ECanVic64.dll`, {
   // EXTERNC DllAPI ULONG CALL Receive(DWORD DeviceType, DWORD DeviceInd, DWORD CANInd, P_CAN_OBJ pReceive, ULONG Len, INT WaitTime);
   Receive: [ULONG, [DWORD, DWORD, DWORD, ref.refType(CAN_OBJ), ULONG, INT]],
 })
+
+export default ECANVic
