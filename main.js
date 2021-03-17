@@ -1,6 +1,6 @@
 const electron = require('electron')
 
-const {app, BrowserWindow} = electron
+const { app, BrowserWindow } = electron
 let mainWindow
 
 function createWindow() {
@@ -8,6 +8,7 @@ function createWindow() {
     width: 1280,
     height: 720,
   })
+  // mainWindow.setMenu(null)
   mainWindow.loadURL(`file://${__dirname}/index.html`)
   mainWindow.on('closed', () => {
     mainWindow = null

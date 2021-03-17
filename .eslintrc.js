@@ -22,4 +22,4 @@ module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   plugins: ['react', '@typescript-eslint'],
   rules: {},
-};
+}
