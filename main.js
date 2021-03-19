@@ -5,8 +5,8 @@ let mainWindow
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1366,
-    height: 768,
+    minWidth: 1366,
+    minHeight: 768,
   })
   // mainWindow.setMenu(null)
   mainWindow.loadURL(`file://${__dirname}/index.html`)
