@@ -11012,7 +11012,7 @@ ref-array-di@^1.2.2:
     array-index "^1.0.0"
     debug "^3.1.0"
 
-"ref-napi@^2.0.1 || ^3.0.2":
+"ref-napi@^2.0.1 || ^3.0.2", ref-napi@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/ref-napi/-/ref-napi-3.0.2.tgz#fe71c2a09df654baa66649d783c6e5ab182c19cb"
   integrity sha512-5YE0XrvWteoTr5DR2sEqxefL06aml7c6qS7hGv3u27do4HlGQphwvB+zD1NYep9utMKScvwOZsSs9EPYdGBVsg==
