@@ -29,7 +29,7 @@ const FuelCell: React.FC = () => {
     setPressure,
     temperature,
     setTemperature,
-  } = useFuelCell(1)
+  } = useFuelCell(0)
 
   const [upHour, setUpdateHour] = useState<number>(0)
   const [upMinute, setUpdateMinute] = useState<number>(0)

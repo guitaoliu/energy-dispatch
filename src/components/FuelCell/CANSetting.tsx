@@ -40,6 +40,10 @@ const CANSetting = ({
         }}
         defaultValue="500"
       >
+        <option value="5">5 kBit/sec</option>
+        <option value="10">10 kBit/sec</option>
+        <option value="20">20 kBit/sec</option>
+        <option value="40">40 kBit/sec</option>
         <option value="50">50 kBit/sec</option>
         <option value="80">80 kBit/sec</option>
         <option value="100">100 kBit/sec</option>
@@ -48,7 +52,7 @@ const CANSetting = ({
         <option value="250">250 kBit/sec</option>
         <option value="400">400 kBit/sec</option>
         <option value="500">500 kBit/sec</option>
-        <option value="600">600 kBit/sec</option>
+        <option value="666">600 kBit/sec</option>
         <option value="800">800 kBit/sec</option>
         <option value="1000">1 MBit/sec</option>
       </Select>

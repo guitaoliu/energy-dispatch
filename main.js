@@ -8,7 +8,8 @@ function createWindow() {
     minWidth: 1366,
     minHeight: 768,
   })
-  // mainWindow.setMenu(null)
+  mainWindow.setMenu(null)
+  mainWindow.webContents.openDevTools()
   mainWindow.loadURL(`file://${__dirname}/index.html`)
   mainWindow.on('closed', () => {
     mainWindow = null
