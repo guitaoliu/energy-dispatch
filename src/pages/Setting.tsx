@@ -1,5 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-const Setting = (): JSX.Element => <div>Setting</div>
+const Setting: React.FC = () => {
+  return <div>Setting</div>;
+};
 
-export default Setting
+export default Setting;

@@ -1,19 +1,20 @@
-import React from 'react'
+import React from 'react';
 
-import { SimpleGrid, Button, Icon } from '@chakra-ui/react'
-import { MdSave, MdDelete } from 'react-icons/md'
-import { VscDebugStart, VscDebugStop } from 'react-icons/vsc'
+import { SimpleGrid, Button, Icon } from '@chakra-ui/react';
+import { MdSave, MdDelete, VscDebugStart, VscDebugStop } from 'react-icons/all';
 
 export interface ControllerProps {
-  handleClear: () => void
-  isStart: boolean
-  setStart: React.Dispatch<React.SetStateAction<boolean>>
+  handleClear: () => void;
+  isStart: boolean;
+  handleStart: () => void;
+  handleStop: () => void;
 }
 
 const Controller = ({
   handleClear,
   isStart,
-  setStart,
+  handleStart,
+  handleStop,
 }: ControllerProps): JSX.Element => (
   <SimpleGrid columns={2} spacing={1}>
     <Button
@@ -21,7 +22,7 @@ const Controller = ({
       colorScheme="green"
       w="28"
       isDisabled={isStart}
-      onClick={() => setStart(true)}
+      onClick={handleStart}
     >
       START
     </Button>
@@ -31,7 +32,7 @@ const Controller = ({
       variant="outline"
       w="28"
       isDisabled={!isStart}
-      onClick={() => setStart(false)}
+      onClick={handleStop}
     >
       STOP
     </Button>
@@ -52,6 +53,6 @@ const Controller = ({
       CLEAR
     </Button>
   </SimpleGrid>
-)
+);
 
-export default Controller
+export default Controller;

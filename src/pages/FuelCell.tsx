@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 import {
   HStack,
@@ -7,102 +7,61 @@ import {
   Box,
   useToast,
   useMediaQuery,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
-import DataTableGrid, {
-  useFuelCell,
-} from '../components/FuelCell/DataTableGrid'
-import Controller from '../components/FuelCell/Controller'
-import CANSetting from '../components/FuelCell/CANSetting'
+import Controller from '../components/FuelCell/Controller';
+import CANSetting from '../components/FuelCell/CANSetting';
+import DataTableGrid from '../components/FuelCell/DataTableGrid';
+
+import { DataRecord } from '../types/fuelCell';
+import useFuelCell from '../hooks/useFuelCell';
+
+import timeToString from '../utils/timeToString';
 
 const FuelCell: React.FC = () => {
-  const {
-    output,
-    setOutput,
-    powerStack,
-    setPowerStack,
-    load,
-    setLoad,
-    concentration,
-    setConcentration,
-    pressure,
-    setPressure,
-    temperature,
-    setTemperature,
-  } = useFuelCell(0)
+  const { states: fuelCellStates, setStates: fuelCellSetStates } = useFuelCell(
+    0
+  );
 
-  const [upHour, setUpdateHour] = useState<number>(0)
-  const [upMinute, setUpdateMinute] = useState<number>(0)
-  const [upSecond, setUpdateSecond] = useState<number>(0)
+  const [baudRate, setBaudRate] = useState<number>(500000);
+  const [power, setPower] = useState<number>(500);
+  const [canChannel, setCanChannel] = useState<number>(0);
+  const [isStart, setStart] = useState<boolean>(false);
 
-  const [baudRate, setBaudRate] = useState<number>(500000)
-  const [canChannel, setCanChannel] = useState<number>(0)
-  const [isStart, setStart] = useState<boolean>(false)
+  const clearToast = useToast();
+  const [showCharts] = useMediaQuery('(min-width: 1536px)');
 
-  const clearToast = useToast()
-  const [showCharts] = useMediaQuery('(min-width: 1536px)')
-
-  const handleClear = () => {
-    setOutput(() => {
-      const updatedOutput = { ...output }
-      updatedOutput.data = output.data.map((data) => ({
-        ...data,
-        value: 0,
-      }))
-      return updatedOutput
-    })
-    setPowerStack(() => {
-      const updatedPowerStack = { ...powerStack }
-      updatedPowerStack.data = updatedPowerStack.data.map((data) => ({
-        ...data,
-        value: 0,
-      }))
-      return updatedPowerStack
-    })
-    setLoad(() => {
-      const updatedLoad = { ...load }
-      updatedLoad.data = updatedLoad.data.map((data) => ({
-        ...data,
-        value: 0,
-      }))
-      return updatedLoad
-    })
-    setConcentration(() => {
-      const updatedConcentration = { ...concentration }
-      updatedConcentration.data = updatedConcentration.data.map((data) => ({
-        ...data,
-        value: 0,
-      }))
-      return updatedConcentration
-    })
-    setPressure(() => {
-      const updatedPressure = { ...pressure }
-      updatedPressure.data = updatedPressure.data.map((data) => ({
-        ...data,
-        value: 0,
-      }))
-      return updatedPressure
-    })
-    setTemperature(() => {
-      const updatedTemperature = { ...temperature }
-      updatedTemperature.data = updatedTemperature.data.map((data) => ({
-        ...data,
-        value: 0,
-      }))
-      return updatedTemperature
-    })
-    setUpdateSecond(0)
-    setUpdateMinute(0)
-    setUpdateHour(0)
-    setStart(false)
+  const handleStart = () => {
+    setStart(true);
     clearToast({
       title: 'Done!',
-      description: 'Data is cleared and the connection is closed.',
+      description: `USB CAN started and fuel cell is initialized with demand power ${power}W`,
       status: 'success',
       duration: 5000,
       isClosable: true,
-    })
-  }
+    });
+  };
+
+  const handleStop = () => {
+    setStart(false);
+    clearToast({
+      title: 'Done!',
+      description: 'Fuel cell stopped',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const handleClear = () => {
+    clearToast({
+      title: 'Done!',
+      description: 'Cleared!',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   return (
     <VStack justifyContent="center">
@@ -110,31 +69,31 @@ const FuelCell: React.FC = () => {
         <VStack w="30%" justifyContent="center" alignItems="center">
           <Text fontSize="3xl">UP TIME</Text>
           <Text fontSize="3xl" fontWeight="bold" letterSpacing="wider">
-            {upHour < 10 ? `0${upHour}` : upHour}:
-            {upMinute < 10 ? `0${upMinute}` : upMinute}:
-            {upSecond < 10 ? `0${upSecond}` : upSecond}
+            {timeToString(fuelCellStates.hour)}:
+            {timeToString(fuelCellStates.minute)}:
+            {timeToString(fuelCellStates.second)}
           </Text>
         </VStack>
         <VStack w="40%" justifyContent="center">
-          <CANSetting setCanChannel={setCanChannel} setBaudRate={setBaudRate} />
+          <CANSetting
+            isStart={isStart}
+            setCanChannel={setCanChannel}
+            setBaudRate={setBaudRate}
+          />
         </VStack>
         <VStack w="30%" justifyContent="center">
           <Controller
             handleClear={handleClear}
             isStart={isStart}
-            setStart={setStart}
+            handleStart={handleStart}
+            handleStop={handleStop}
           />
         </VStack>
       </HStack>
 
       <HStack w="80%" justifyContent="center" spacing={2}>
         <DataTableGrid
-          output={output}
-          powerStack={powerStack}
-          load={load}
-          concentration={concentration}
-          pressure={pressure}
-          temperature={temperature}
+          tablesData={Object.values(fuelCellStates) as DataRecord[]}
         />
         {showCharts && (
           <Box
@@ -151,7 +110,7 @@ const FuelCell: React.FC = () => {
         )}
       </HStack>
     </VStack>
-  )
-}
+  );
+};
 
-export default FuelCell
+export default FuelCell;

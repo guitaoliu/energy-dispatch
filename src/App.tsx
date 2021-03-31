@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react';
 
 import {
   Tabs,
@@ -12,21 +12,26 @@ import {
   Collapse,
   Spacer,
   useDisclosure,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
-import { GoDashboard, GoSettings, GoServer } from 'react-icons/go'
-import { GiCarBattery } from 'react-icons/gi'
-import { BsFillLightningFill } from 'react-icons/bs'
-import { MdExpandLess, MdExpandMore } from 'react-icons/md'
+import {
+  GoDashboard,
+  GoSettings,
+  GoServer,
+  GiCarBattery,
+  BsFillLightningFill,
+  MdExpandLess,
+  MdExpandMore,
+} from 'react-icons/all';
 
-import FuelCell from './pages/FuelCell'
-import Home from './pages/Home'
-import Devices from './pages/Devices'
-import Setting from './pages/Setting'
-import ACDC from './pages/ADDC'
+import FuelCell from './pages/FuelCell';
+import Home from './pages/Home';
+import Devices from './pages/Devices';
+import Setting from './pages/Setting';
+import ACDC from './pages/ADDC';
 
-const App = (): JSX.Element => {
-  const { isOpen, onToggle, onClose } = useDisclosure()
+const App: React.FC = () => {
+  const { isOpen, onToggle, onClose } = useDisclosure();
   return (
     <Tabs variant="enclosed" isLazy orientation="vertical" h="100%">
       <TabList py={3} bg="blue.400" w="60" shadow="2xl">
@@ -100,7 +105,7 @@ const App = (): JSX.Element => {
         </Tab>
         <Spacer />
         <Tab color="white" isDisabled _hover={{ cursor: 'content-menu' }}>
-          © Xi'an Jiaotong University
+          © Xi&#39;an Jiaotong University
         </Tab>
       </TabList>
       <TabPanels py={3} h="100%">
@@ -121,7 +126,7 @@ const App = (): JSX.Element => {
         </TabPanel>
       </TabPanels>
     </Tabs>
-  )
-}
+  );
+};
 
-export default App
+export default App;

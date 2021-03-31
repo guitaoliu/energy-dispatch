@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-const ADDC = (): JSX.Element => {
-  return <div>ACDC</div>
-}
+const ACDC: React.FC = () => {
+  return <div>addc</div>;
+};
 
-export default ADDC
+export default ACDC;
