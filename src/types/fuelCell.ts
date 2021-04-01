@@ -26,12 +26,12 @@ export type FuelCellData =
   | 'TemperatureDCDC'
   | 'SystemRuntimeHour'
   | 'SystemRuntimeMinute'
-  | 'SystemRuntimeSecond';
+  | 'SystemRuntimeSecond'
 
 export interface DataRecord {
-  id: number;
-  source: string;
-  name: string;
-  value: number;
-  unit?: string;
+  id: number
+  source: string
+  name: string
+  value: number
+  unit?: string
 }

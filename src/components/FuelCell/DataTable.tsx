@@ -1,20 +1,12 @@
-import React from 'react';
+import React from 'react'
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  TableCaption,
-  Tr,
-  Th,
-  Td,
-} from '@chakra-ui/react';
+import { Table, Thead, Tbody, TableCaption, Tr, Th, Td } from '@chakra-ui/react'
 
-import { DataRecord } from '../../types/fuelCell';
+import { DataRecord } from '../../types/fuelCell'
 
 export interface DataTableProps {
-  name: string;
-  data: DataRecord[];
+  name: string
+  data: DataRecord[]
 }
 
 const DataTable = ({ name, data }: DataTableProps): JSX.Element => (
@@ -37,6 +29,6 @@ const DataTable = ({ name, data }: DataTableProps): JSX.Element => (
       ))}
     </Tbody>
   </Table>
-);
+)
 
-export default DataTable;
+export default DataTable

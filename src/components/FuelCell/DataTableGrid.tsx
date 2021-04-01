@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Grid, GridItem } from '@chakra-ui/react'
 
-import DataTable from './DataTable';
-import { DataRecord } from '../../types/fuelCell';
+import DataTable from './DataTable'
+import { DataRecord } from '../../types/fuelCell'
 
 export interface DataTableGridProps {
-  tablesData: DataRecord[];
+  tablesData: DataRecord[]
 }
 
 const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
@@ -15,27 +15,27 @@ const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
     data: tablesData.filter(
       (data) => data.source === 'Output' || data.source === 'DCDC'
     ),
-  };
+  }
   const powerStack = {
     name: 'Power Stack',
     data: tablesData.filter((data) => data.source === 'Power Stack'),
-  };
+  }
   const load = {
     name: 'Load',
     data: tablesData.filter((data) => data.source === 'Load'),
-  };
+  }
   const concentration = {
     name: 'Concentration',
     data: tablesData.filter((data) => data.source === 'Concentration'),
-  };
+  }
   const pressure = {
     name: 'Pressure',
     data: tablesData.filter((data) => data.source === 'Pressure'),
-  };
+  }
   const temperature = {
     name: 'Temperature',
     data: tablesData.filter((data) => data.source === 'Temperature'),
-  };
+  }
   return (
     <Grid
       h="6initValue%"
@@ -63,7 +63,7 @@ const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
         <DataTable name={temperature.name} data={temperature.data} />
       </GridItem>
     </Grid>
-  );
-};
+  )
+}
 
-export default DataTableGrid;
+export default DataTableGrid

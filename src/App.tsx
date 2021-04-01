@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 import {
   Tabs,
@@ -12,7 +12,7 @@ import {
   Collapse,
   Spacer,
   useDisclosure,
-} from '@chakra-ui/react';
+} from '@chakra-ui/react'
 
 import {
   GoDashboard,
@@ -22,16 +22,16 @@ import {
   BsFillLightningFill,
   MdExpandLess,
   MdExpandMore,
-} from 'react-icons/all';
+} from 'react-icons/all'
 
-import FuelCell from './pages/FuelCell';
-import Home from './pages/Home';
-import Devices from './pages/Devices';
-import Setting from './pages/Setting';
-import ACDC from './pages/ADDC';
+import FuelCell from './pages/FuelCell'
+import Home from './pages/Home'
+import Devices from './pages/Devices'
+import Setting from './pages/Setting'
+import ACDC from './pages/ADDC'
 
 const App: React.FC = () => {
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onToggle, onClose } = useDisclosure()
   return (
     <Tabs variant="enclosed" isLazy orientation="vertical" h="100%">
       <TabList py={3} bg="blue.400" w="60" shadow="2xl">
@@ -126,7 +126,7 @@ const App: React.FC = () => {
         </TabPanel>
       </TabPanels>
     </Tabs>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
 const ACDC: React.FC = () => {
-  return <div>addc</div>;
-};
+  return <div>addc</div>
+}
 
-export default ACDC;
+export default ACDC

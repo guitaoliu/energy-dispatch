@@ -1,26 +1,26 @@
-import path from 'path';
-import fs from 'fs';
-import webpack from 'webpack';
-import chalk from 'chalk';
-import { merge } from 'webpack-merge';
-import { spawn, execSync } from 'child_process';
-import baseConfig from './webpack.config.base';
-import CheckNodeEnv from '../scripts/CheckNodeEnv';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import path from 'path'
+import fs from 'fs'
+import webpack from 'webpack'
+import chalk from 'chalk'
+import { merge } from 'webpack-merge'
+import { spawn, execSync } from 'child_process'
+import baseConfig from './webpack.config.base'
+import CheckNodeEnv from '../scripts/CheckNodeEnv'
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 
 // When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
 // at the dev webpack config is not accidentally run in a production environment
 if (process.env.NODE_ENV === 'production') {
-  CheckNodeEnv('development');
+  CheckNodeEnv('development')
 }
 
-const port = process.env.PORT || 1212;
-const publicPath = `http://localhost:${port}/dist`;
-const dllDir = path.join(__dirname, '../dll');
-const manifest = path.resolve(dllDir, 'renderer.json');
+const port = process.env.PORT || 1212
+const publicPath = `http://localhost:${port}/dist`
+const dllDir = path.join(__dirname, '../dll')
+const manifest = path.resolve(dllDir, 'renderer.json')
 const requiredByDLLConfig = module.parent.filename.includes(
   'webpack.config.renderer.dev.dll'
-);
+)
 
 /**
  * Warn if the DLL is not built
@@ -33,8 +33,8 @@ if (
     chalk.black.bgYellow.bold(
       'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
     )
-  );
-  execSync('yarn build-dll');
+  )
+  execSync('yarn build-dll')
 }
 
 export default merge(baseConfig, {
@@ -271,14 +271,14 @@ export default merge(baseConfig, {
       disableDotRule: false,
     },
     before() {
-      console.log('Starting Main Process...');
+      console.log('Starting Main Process...')
       spawn('npm', ['run', 'start:main'], {
         shell: true,
         env: process.env,
         stdio: 'inherit',
       })
         .on('close', (code) => process.exit(code))
-        .on('error', (spawnError) => console.error(spawnError));
+        .on('error', (spawnError) => console.error(spawnError))
     },
   },
-});
+})

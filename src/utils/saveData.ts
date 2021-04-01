@@ -1,5 +1,5 @@
-import { remote } from 'electron';
-import fs from 'fs';
+import { remote } from 'electron'
+import fs from 'fs'
 
 export default function saveData(
   data: string,
@@ -20,10 +20,15 @@ export default function saveData(
       properties: [],
     })
     .then((file) => {
-      const saveFilePath = file.filePath?.toString();
+      const saveFilePath = file.filePath?.toString()
       if (saveFilePath !== undefined) {
-        fs.writeFile(saveFilePath.toString(), data, (err) => err);
+        fs.writeFile(saveFilePath.toString(), data, (err) => err)
+        return null
       }
-    });
-  return null;
+      throw new Error('Cannot save to that path')
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  return null
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 import {
   Table,
@@ -9,11 +9,11 @@ import {
   Td,
   TableCaption,
   Flex,
-} from '@chakra-ui/react';
+} from '@chakra-ui/react'
 
 interface DevicesData {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 
 const devicesList: DevicesData[] = [
@@ -26,7 +26,7 @@ const devicesList: DevicesData[] = [
     name: 'AC/DC Transformer',
     description: 'It is able to perform the transition between DC AC power.',
   },
-];
+]
 
 const Devices: React.FC = () => (
   <Flex justifyContent="center" alignItems="center" h="100%">
@@ -57,6 +57,6 @@ const Devices: React.FC = () => (
       </Tbody>
     </Table>
   </Flex>
-);
+)
 
-export default Devices;
+export default Devices

@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 
-import { SimpleGrid, Button, Icon } from '@chakra-ui/react';
-import { MdSave, MdDelete, VscDebugStart, VscDebugStop } from 'react-icons/all';
+import { SimpleGrid, Button, Icon } from '@chakra-ui/react'
+import { MdSave, MdDelete, VscDebugStart, VscDebugStop } from 'react-icons/all'
 
 export interface ControllerProps {
-  handleClear: () => void;
-  isStart: boolean;
-  handleStart: () => void;
-  handleStop: () => void;
+  handleClear: () => void
+  isStart: boolean
+  handleStart: () => void
+  handleStop: () => void
 }
 
 const Controller = ({
@@ -16,43 +16,43 @@ const Controller = ({
   handleStart,
   handleStop,
 }: ControllerProps): JSX.Element => (
-  <SimpleGrid columns={2} spacing={1}>
+  <SimpleGrid columns={2} spacing={3}>
     <Button
       leftIcon={<Icon as={VscDebugStart} boxSize={5} />}
       colorScheme="green"
-      w="28"
+      w="24"
       isDisabled={isStart}
       onClick={handleStart}
     >
       START
     </Button>
     <Button
+      leftIcon={<Icon as={MdSave} boxSize={5} />}
+      colorScheme="blue"
+      w="24"
+    >
+      SAVE
+    </Button>
+    <Button
       leftIcon={<Icon as={VscDebugStop} boxSize={5} />}
       colorScheme="red"
       variant="outline"
-      w="28"
+      w="24"
       isDisabled={!isStart}
       onClick={handleStop}
     >
       STOP
     </Button>
     <Button
-      leftIcon={<Icon as={MdSave} boxSize={5} />}
-      colorScheme="blue"
-      w="28"
-    >
-      SAVE
-    </Button>
-    <Button
       leftIcon={<Icon as={MdDelete} boxSize={5} />}
       colorScheme="red"
       variant="outline"
       onClick={handleClear}
-      w="28"
+      w="24"
     >
       CLEAR
     </Button>
   </SimpleGrid>
-);
+)
 
-export default Controller;
+export default Controller
