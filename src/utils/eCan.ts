@@ -1,7 +1,8 @@
 import * as ffi from 'ffi-napi'
 import * as ref from 'ref-napi'
-import StructType from 'ref-struct-di'
-import ArrayType from 'ref-array-di'
+
+const StructType = require('ref-struct-di')(ref)
+const ArrayType = require('ref-array-di')(ref)
 
 /**
  * types definition
@@ -15,11 +16,14 @@ const CHAR = ref.types.char
 const UCHAR = ref.types.uchar
 const BYTE = ref.types.byte
 
+const DATA_ARRAY = ArrayType(BYTE, 8)
+const RESERVED_ARRAY = ArrayType(BYTE, 3)
+
 /**
  * ECAN serial board information
  * Used in ReadBoardInfo
  */
-export const BOARD_INFO = StructType({
+const BOARD_INFO = StructType({
   dw_Version: USHORT,
   fw_Version: USHORT,
   dr_Version: USHORT,
@@ -35,7 +39,7 @@ export const BOARD_INFO = StructType({
  * ECAN serial board information
  * Used in transmit
  */
-export const CAN_OBJ = StructType({
+const CAN_OBJ = StructType({
   ID: UINT,
   TimeStamp: UINT,
   TimeFlag: BYTE,
@@ -43,15 +47,15 @@ export const CAN_OBJ = StructType({
   RemoteFlag: BYTE,
   ExternFlag: BYTE,
   DataLen: BYTE,
-  Data: ArrayType(BYTE, 8),
-  Reserved: ArrayType(BYTE, 3),
+  Data: DATA_ARRAY,
+  Reserved: RESERVED_ARRAY,
 })
 
 /**
  * can controller status
  * Used in ReadCanStatus
  */
-export const CAN_STATUS = StructType({
+const CAN_STATUS = StructType({
   errInterrupt: UCHAR,
   regMode: UCHAR,
   regStatus: UCHAR,
@@ -67,7 +71,7 @@ export const CAN_STATUS = StructType({
  * ErrInfo VCI library error information
  * Used in ReadErrInfo
  */
-export const ERR_INFO = StructType({
+const ERR_INFO = StructType({
   ErrCode: UINT,
   Passive_ErrData: ArrayType(BYTE, 3),
   ArLost_ErrData: BYTE,
@@ -77,7 +81,7 @@ export const ERR_INFO = StructType({
  * Initialization Configuration for CAN
  * Used in InitCAN
  */
-export const INIT_CONFIG = StructType({
+const INIT_CONFIG = new StructType({
   AccCode: DWORD,
   AccMask: DWORD,
   Reserved: DWORD,
@@ -87,13 +91,11 @@ export const INIT_CONFIG = StructType({
   Mode: UCHAR,
 })
 
-export const FILTER_RECORD = StructType({
+const FILTER_RECORD = new StructType({
   ExtFrame: DWORD,
   Start: DWORD,
   End: DWORD,
 })
-
-const POINTER_INIT_CONFIG = ref.refType(INIT_CONFIG)
 
 /**
  * ffi binding for ECanVic64.dll
@@ -104,7 +106,7 @@ const ECANVic = ffi.Library('ECanVci64.dll', {
   // EXTERNC DllAPI DWORD CALL CloseDevice(DWORD DeviceType, DWORD DeviceInd);
   CloseDevice: [DWORD, [DWORD, DWORD]],
   // EXTERNC DllAPI DWORD CALL InitCAN(DWORD DeviceType, DWORD DeviceInd, DWORD CANInd, P_INIT_CONFIG pInitConfig
-  InitCAN: [DWORD, [DWORD, DWORD, DWORD, POINTER_INIT_CONFIG]],
+  InitCAN: [DWORD, [DWORD, DWORD, DWORD, ref.refType(INIT_CONFIG)]],
   // EXTERNC DllAPI DWORD CALL ReadBoardInfo(DWORD DeviceType, DWORD DeviceInd, P_BOARD_INFO pInfo);
   ReadBoardInfo: [DWORD, [DWORD, DWORD, ref.refType(BOARD_INFO)]],
   // EXTERNC DllAPI DWORD CALL ReadErrInfo(DWORD DeviceType, DWORD DeviceInd, DWORD CANInd, P_ERR_INFO pErrInfo);
@@ -124,7 +126,7 @@ const ECANVic = ffi.Library('ECanVci64.dll', {
   // EXTERNC DllAPI DWORD CALL ResetCAN(DWORD DeviceType, DWORD DeviceInd, DWORD CANInd);
   ResetCAN: [DWORD, [DWORD, DWORD, DWORD]],
   // EXTERNC DllAPI ULONG CALL Transmit(DWORD DeviceType, DWORD DeviceInd, DWORD CANInd, P_CAN_OBJ pSend, ULONG Len);
-  Transmit: [ULONG, [DWORD, DWORD, DWORD, ref.refType(CAN_OBJ)]],
+  Transmit: [ULONG, [DWORD, DWORD, DWORD, ref.refType(CAN_OBJ), ULONG]],
   // EXTERNC DllAPI ULONG CALL Receive(DWORD DeviceType, DWORD DeviceInd, DWORD CANInd, P_CAN_OBJ pReceive, ULONG Len, INT WaitTime);
   Receive: [ULONG, [DWORD, DWORD, DWORD, ref.refType(CAN_OBJ), ULONG, INT]],
 })
@@ -321,10 +323,18 @@ export class FuelCellController {
   changeStatus(power?: number, isStart?: boolean): void {
     this.power = power === undefined ? this.power : power
     this.isStart = isStart === undefined ? this.isStart : isStart
-    const data = ArrayType(
-      BYTE,
-      8
-    )([this.isStart ? 1 : 0, this.power, 0, 0, 0, 0, 0, 0])
+    const data = new Uint8Array([
+      isStart ? 1 : 0,
+      // eslint-disable-next-line no-bitwise
+      this.power & 0x000000ff,
+      // eslint-disable-next-line no-bitwise
+      (this.power & 0x0000ff00) >> 8,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ])
     this.transmit(0x104, data)
   }
 
@@ -333,7 +343,7 @@ export class FuelCellController {
   }
 
   close(): CanStatus {
-    return ECANVic.CloseDevice(this.deviceType, this.devIndex, 0)
+    return ECANVic.CloseDevice(this.deviceType, this.devIndex)
   }
 
   init(
@@ -357,7 +367,7 @@ export class FuelCellController {
       this.deviceType,
       this.devIndex,
       this.canIndex,
-      initConfig
+      initConfig.ref()
     )
   }
 
@@ -367,34 +377,35 @@ export class FuelCellController {
 
   transmit(
     id: number,
-    data: any,
+    data: Uint8Array,
     sendType = 0,
     remote = false,
     extern = false,
     dataLen = 8
   ): number {
-    const reserved = ArrayType(BYTE, 3)([0, 0, 0])
+    const reserved = new RESERVED_ARRAY([0, 0, 0])
+    const dataArray = new DATA_ARRAY(data)
     const canObj = new CAN_OBJ({
       ID: id,
       SendType: sendType,
       RemoteFlag: remote ? 1 : 0,
       ExternFlag: extern ? 1 : 0,
       DataLen: dataLen,
-      Data: data,
+      Data: dataArray,
       Reserved: reserved,
     })
     return ECANVic.Transmit(
       this.deviceType,
       this.devIndex,
       this.canIndex,
-      canObj,
+      canObj.ref(),
       1
     )
   }
 
   receive(id: number, sendType = 0, remote = false, extern = false): number {
-    const reserved = ArrayType(BYTE, 3)([0, 0, 0])
-    const data = ArrayType(BYTE, 8)([0, 0, 0, 0, 0, 0, 0, 0])
+    const reserved = new RESERVED_ARRAY([0, 0, 0])
+    const data = new DATA_ARRAY([0, 0, 0, 0, 0, 0, 0, 0])
     const canObj = new CAN_OBJ({
       ID: id,
       SendType: sendType,
@@ -404,19 +415,20 @@ export class FuelCellController {
       Data: data,
       Reserved: reserved,
     })
+    const canObjPtr = canObj.ref()
     const status = ECANVic.Receive(
       this.deviceType,
       this.devIndex,
       this.canIndex,
-      canObj,
+      canObjPtr,
       1,
       0
     )
-    this.parseData(canObj, data)
+    this.parseData(canObjPtr.deref(), data)
     return status
   }
 
-  parseData(canObj: any, data: any): void {
+  parseData(canObj: typeof CAN_OBJ, data: Uint8Array): void {
     switch (canObj.ID) {
       case 0x401:
         this.outputVolt = (data[0] + data[1] * 256) * 0.1
@@ -424,10 +436,14 @@ export class FuelCellController {
         this.outputPower = data[4] + data[5] * 256
         break
       case 0x402:
-        this.powerStackMinVolt = data[0] * 0.01
-        this.powerStackMinNumber = data[1] * 1
-        this.powerStackMaxVolt = data[2] * 0.01
-        this.powerStackMaxNumber = data[3] * 1
+        ;[
+          this.powerStackMinVolt,
+          this.powerStackMinNumber,
+          this.powerStackMaxVolt,
+          this.powerStackMaxNumber,
+        ] = data
+        this.powerStackMaxVolt *= 0.01
+        this.powerStackMinVolt *= 0.01
         break
       case 0x403:
         this.pressureGas = (data[0] + data[1] * 256) * 0.001
@@ -452,9 +468,7 @@ export class FuelCellController {
         this.concentrationHydrogenRoom = data[6] + data[7] * 256
         break
       case 0x407:
-        this.hour = data[0] * 1
-        this.minute = data[1] * 1
-        this.second = data[2] * 1
+        ;[this.hour, this.minute, this.second] = data
         break
       case 0x408:
         this.dcdcVolt = (data[0] + data[1] * 256) * 0.1
@@ -469,7 +483,7 @@ export class FuelCellController {
 
   update(): void {
     const data = new ArrayType(BYTE)([0, 0, 0, 0, 0, 0, 0, 0])
-    this.transmit(0x16, data)
+    this.transmit(0x16, data.ref())
     this.receive(0x16)
   }
 }
