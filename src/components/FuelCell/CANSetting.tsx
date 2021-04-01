@@ -14,10 +14,10 @@ import {
 export interface CANSettingProps {
   isStart: boolean
   power: number
-  canChannel: number
+  deviceType: number
   baudRate: number
   setPower: React.Dispatch<React.SetStateAction<number>>
-  setCanChannel: React.Dispatch<React.SetStateAction<number>>
+  setDeviceType: React.Dispatch<React.SetStateAction<number>>
   setBaudRate: React.Dispatch<React.SetStateAction<number>>
 }
 
@@ -25,8 +25,8 @@ const CANSetting = ({
   isStart,
   power,
   setPower,
-  canChannel,
-  setCanChannel,
+  deviceType,
+  setDeviceType,
   baudRate,
   setBaudRate,
 }: CANSettingProps): JSX.Element => (
@@ -52,14 +52,14 @@ const CANSetting = ({
     </HStack>
 
     <HStack justifyContent="center" w={64}>
-      <Text fontSize="sm">CAN Channel:</Text>
+      <Text fontSize="sm">Device Type:</Text>
       <Select
         size="sm"
         w="50%"
         onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-          setCanChannel(Number(event.target.value))
+          setDeviceType(Number(event.target.value))
         }}
-        defaultValue={canChannel}
+        defaultValue={deviceType}
         isDisabled={isStart}
       >
         <option value="0">USB CAN I</option>

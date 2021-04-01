@@ -28,7 +28,7 @@ export type FuelCellData =
   | 'SystemRuntimeMinute'
   | 'SystemRuntimeSecond'
 
-export interface DataRecord {
+export type DataRecord = {
   id: number
   source: string
   name: string

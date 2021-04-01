@@ -320,6 +320,11 @@ export class FuelCellController {
     this.canIndex = canIndex
   }
 
+  set deviceTypeNumber(deviceTypeNumber: number) {
+    this.deviceType =
+      deviceTypeNumber === 0 ? DeviceType.USBCANI : DeviceType.USBCANII
+  }
+
   changeStatus(power?: number, isStart?: boolean): void {
     this.power = power === undefined ? this.power : power
     this.isStart = isStart === undefined ? this.isStart : isStart
