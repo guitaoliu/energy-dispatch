@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 
 import {
   HStack,
@@ -7,51 +7,65 @@ import {
   Box,
   useToast,
   useMediaQuery,
-} from '@chakra-ui/react';
+} from '@chakra-ui/react'
 
-import Controller from '../components/FuelCell/Controller';
-import CANSetting from '../components/FuelCell/CANSetting';
-import DataTableGrid from '../components/FuelCell/DataTableGrid';
+import Controller from '../components/FuelCell/Controller'
+import CANSetting from '../components/FuelCell/CANSetting'
+import DataTableGrid from '../components/FuelCell/DataTableGrid'
 
-import { DataRecord } from '../types/fuelCell';
-import useFuelCell from '../hooks/useFuelCell';
+import { DataRecord } from '../types/fuelCell'
+import useFuelCell from '../hooks/useFuelCell'
 
-import timeToString from '../utils/timeToString';
+import timeToString from '../utils/timeToString'
+
+import { FuelCellController } from '../utils/eCan'
+
+const FCController = new FuelCellController()
 
 const FuelCell: React.FC = () => {
   const { states: fuelCellStates, setStates: fuelCellSetStates } = useFuelCell(
     0
-  );
+  )
 
-  const [baudRate, setBaudRate] = useState<number>(500000);
-  const [power, setPower] = useState<number>(500);
-  const [canChannel, setCanChannel] = useState<number>(0);
-  const [isStart, setStart] = useState<boolean>(false);
+  const [baudRate, setBaudRate] = useState<number>(500000)
+  const [power, setPower] = useState<number>(500)
+  const [canChannel, setCanChannel] = useState<number>(0)
+  const [isStart, setStart] = useState<boolean>(false)
 
-  const clearToast = useToast();
-  const [showCharts] = useMediaQuery('(min-width: 1536px)');
+  const clearToast = useToast()
+  const [showCharts] = useMediaQuery('(min-width: 1536px)')
+
+  useEffect(() => {
+    FCController.open()
+    return () => {
+      FCController.close()
+    }
+  }, [])
 
   const handleStart = () => {
-    setStart(true);
+    setStart(true)
+    FCController.init(false, baudRate)
+    FCController.changeStatus(power, isStart)
     clearToast({
       title: 'Done!',
       description: `USB CAN started and fuel cell is initialized with demand power ${power}W`,
       status: 'success',
       duration: 5000,
       isClosable: true,
-    });
-  };
+    })
+  }
 
   const handleStop = () => {
-    setStart(false);
+    setStart(false)
+    FCController.changeStatus(power, isStart)
     clearToast({
       title: 'Done!',
       description: 'Fuel cell stopped',
       status: 'success',
       duration: 3000,
       isClosable: true,
-    });
-  };
+    })
+  }
 
   const handleClear = () => {
     clearToast({
@@ -60,8 +74,8 @@ const FuelCell: React.FC = () => {
       status: 'success',
       duration: 3000,
       isClosable: true,
-    });
-  };
+    })
+  }
 
   return (
     <VStack justifyContent="center">
@@ -77,6 +91,10 @@ const FuelCell: React.FC = () => {
         <VStack w="40%" justifyContent="center">
           <CANSetting
             isStart={isStart}
+            power={power}
+            canChannel={canChannel}
+            baudRate={baudRate}
+            setPower={setPower}
             setCanChannel={setCanChannel}
             setBaudRate={setBaudRate}
           />
@@ -110,7 +128,7 @@ const FuelCell: React.FC = () => {
         )}
       </HStack>
     </VStack>
-  );
-};
+  )
+}
 
-export default FuelCell;
+export default FuelCell
