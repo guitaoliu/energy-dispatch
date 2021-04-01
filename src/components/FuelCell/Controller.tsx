@@ -1,7 +1,8 @@
 import React from 'react'
 
 import { SimpleGrid, Button, Icon } from '@chakra-ui/react'
-import { MdSave, MdDelete, VscDebugStart, VscDebugStop } from 'react-icons/all'
+import { MdSave, MdDelete } from 'react-icons/md'
+import { VscDebugStart, VscDebugStop } from 'react-icons/vsc'
 
 export interface ControllerProps {
   handleClear: () => void

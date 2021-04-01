@@ -14,15 +14,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 
-import {
-  GoDashboard,
-  GoSettings,
-  GoServer,
-  GiCarBattery,
-  BsFillLightningFill,
-  MdExpandLess,
-  MdExpandMore,
-} from 'react-icons/all'
+import { GoDashboard, GoSettings, GoServer } from 'react-icons/go'
+import { GiCarBattery } from 'react-icons/gi'
+import { BsFillLightningFill } from 'react-icons/bs'
+import { MdExpandLess, MdExpandMore } from 'react-icons/md'
 
 import FuelCell from './pages/FuelCell'
 import Home from './pages/Home'
