@@ -27,9 +27,9 @@ export interface FuelCellData {
   temperatureCoolingWaterIn: DataRecord
   temperatureCoolingWaterOut: DataRecord
   temperatureSystemCabinet: DataRecord
-  hour: number
-  minute: number
-  second: number
+  hour: DataRecord
+  minute: DataRecord
+  second: DataRecord
 }
 
 export interface FuelCellSetState {
@@ -63,9 +63,9 @@ export interface FuelCellSetState {
     React.SetStateAction<DataRecord>
   >
   setTemperatureSystemCabinet: React.Dispatch<React.SetStateAction<DataRecord>>
-  setHour: React.Dispatch<React.SetStateAction<number>>
-  setMinute: React.Dispatch<React.SetStateAction<number>>
-  setSecond: React.Dispatch<React.SetStateAction<number>>
+  setHour: React.Dispatch<React.SetStateAction<DataRecord>>
+  setMinute: React.Dispatch<React.SetStateAction<DataRecord>>
+  setSecond: React.Dispatch<React.SetStateAction<DataRecord>>
 }
 
 export interface FuelCellStatue {
@@ -117,47 +117,47 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
     unit: 'W',
   })
   const [powerStackMinVolt, setPowerStackMinVolt] = useState<DataRecord>({
-    id: 1,
+    id: 7,
     source: 'Power Stack',
     name: 'Min Volt',
     value: initValue,
     unit: 'V',
   })
   const [powerStackMinNumber, setPowerStackMinNumber] = useState<DataRecord>({
-    id: 2,
+    id: 8,
     source: 'Power Stack',
     name: 'Min Number',
     value: initValue,
   })
   const [powerStackMaxVolt, setPowerStackMaxVolt] = useState<DataRecord>({
-    id: 3,
+    id: 9,
     source: 'Power Stack',
     name: 'Max Volt',
     value: initValue,
     unit: 'V',
   })
   const [powerStackMaxNumber, setPowerStackMaxNumber] = useState<DataRecord>({
-    id: 4,
+    id: 10,
     source: 'Power Stack',
     name: 'Max Number',
     value: initValue,
   })
   const [pressureHydrogen, setPressureHydrogen] = useState<DataRecord>({
-    id: 1,
+    id: 11,
     source: 'Pressure',
     name: 'Hydrogen',
     value: initValue,
     unit: 'bar',
   })
   const [pressureCoolingWater, setPressureCoolingWater] = useState<DataRecord>({
-    id: 2,
+    id: 12,
     source: 'Pressure',
     name: 'Cooling Water',
     value: initValue,
     unit: 'bar',
   })
   const [pressureGas, setPressureGas] = useState<DataRecord>({
-    id: 3,
+    id: 13,
     source: 'Pressure',
     name: 'Gas',
     value: initValue,
@@ -166,7 +166,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [pressureMainHydrogenBottle, setPressureMainHydrogenBottle] = useState<
     DataRecord
   >({
-    id: 4,
+    id: 14,
     source: 'Pressure',
     name: 'Main Hydrogen Bottle',
     value: initValue,
@@ -176,21 +176,21 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
     pressureAttachedHydrogenBottle,
     setPressureAttachedHydrogenBottle,
   ] = useState<DataRecord>({
-    id: 5,
+    id: 15,
     source: 'Pressure',
     name: 'Attached Hydrogen Bottle',
     value: initValue,
     unit: 'Mpa',
   })
   const [loadVolt, setLoadVolt] = useState<DataRecord>({
-    id: 1,
+    id: 16,
     source: 'Load',
     name: 'Volt',
     value: initValue,
     unit: 'V',
   })
   const [loadCurrent, setLoadCurrent] = useState<DataRecord>({
-    id: 2,
+    id: 17,
     source: 'Load',
     name: 'Current',
     value: initValue,
@@ -199,7 +199,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [concentrationSystemRoom, setConcentrationSystemRoom] = useState<
     DataRecord
   >({
-    id: 1,
+    id: 18,
     source: 'Concentration',
     name: 'System Room',
     value: initValue,
@@ -208,21 +208,21 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [concentrationHydrogenRoom, setConcentrationHydrogenRoom] = useState<
     DataRecord
   >({
-    id: 2,
+    id: 19,
     source: 'Concentration',
     name: 'Hydrogen Room',
     value: initValue,
     unit: 'ppm',
   })
   const [temperatureGasIn, setTemperatureGasIn] = useState<DataRecord>({
-    id: 1,
+    id: 20,
     source: 'Temperature',
     name: 'Gas In',
     value: initValue,
     unit: '℃',
   })
   const [temperatureGasOut, setTemperatureGasOut] = useState<DataRecord>({
-    id: 2,
+    id: 21,
     source: 'Temperature',
     name: 'Gas Out',
     value: initValue,
@@ -231,7 +231,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [temperatureCoolingWaterIn, setTemperatureCoolingWaterIn] = useState<
     DataRecord
   >({
-    id: 3,
+    id: 22,
     source: 'Temperature',
     name: 'Cooling Water In',
     value: initValue,
@@ -240,7 +240,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [temperatureCoolingWaterOut, setTemperatureCoolingWaterOut] = useState<
     DataRecord
   >({
-    id: 4,
+    id: 23,
     source: 'Temperature',
     name: 'Cooling Water Out',
     value: initValue,
@@ -249,15 +249,30 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [temperatureSystemCabinet, setTemperatureSystemCabinet] = useState<
     DataRecord
   >({
-    id: 5,
+    id: 24,
     source: 'Temperature',
     name: 'System Cabinet',
     value: initValue,
     unit: '℃',
   })
-  const [hour, setHour] = useState<number>(0)
-  const [minute, setMinute] = useState<number>(0)
-  const [second, setSecond] = useState<number>(0)
+  const [hour, setHour] = useState<DataRecord>({
+    id: 25,
+    source: 'Up Time',
+    name: 'hour',
+    value: initValue,
+  })
+  const [minute, setMinute] = useState<DataRecord>({
+    id: 26,
+    source: 'Up Time',
+    name: 'minute',
+    value: initValue,
+  })
+  const [second, setSecond] = useState<DataRecord>({
+    id: 27,
+    source: 'Up Time',
+    name: 'minute',
+    value: initValue,
+  })
   return {
     states: {
       outputPower,

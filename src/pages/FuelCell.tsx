@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import {
-  HStack,
-  VStack,
-  Text,
-  Box,
-  useToast,
-  useMediaQuery,
-} from '@chakra-ui/react'
+import { HStack, Text, useMediaQuery, useToast, VStack } from '@chakra-ui/react'
 
 import Controller from '../components/FuelCell/Controller'
 import CANSetting from '../components/FuelCell/CANSetting'
@@ -19,6 +12,7 @@ import useFuelCell from '../hooks/useFuelCell'
 import timeToString from '../utils/timeToString'
 
 import { FuelCellController } from '../utils/eCan'
+import FCChart from '../components/FuelCell/FCChart'
 
 const FCController = new FuelCellController()
 
@@ -27,14 +21,17 @@ const FuelCell: React.FC = () => {
     0
   )
 
+  const [isStart, setStart] = useState<boolean>(false)
   const [baudRate, setBaudRate] = useState<number>(500000)
   const [power, setPower] = useState<number>(500)
-  const [canChannel, setCanChannel] = useState<number>(0)
-  const [isStart, setStart] = useState<boolean>(false)
+  const [deviceType, setDeviceType] = useState<number>(0)
 
   const clearToast = useToast()
   const [showCharts] = useMediaQuery('(min-width: 1536px)')
 
+  /**
+   * Initialize CAN bus while rendering the page
+   */
   useEffect(() => {
     FCController.open()
     return () => {
@@ -42,13 +39,23 @@ const FuelCell: React.FC = () => {
     }
   }, [])
 
+  useEffect(() => {
+    FCController.deviceTypeNumber = deviceType
+  }, [deviceType])
+
+  /**
+   * Listen to demand power change
+   */
+  useEffect(() => {
+    FCController.changeStatus(power, isStart)
+  }, [power, isStart])
+
   const handleStart = () => {
     setStart(true)
     FCController.init(false, baudRate)
-    FCController.changeStatus(power, isStart)
     clearToast({
       title: 'Done!',
-      description: `USB CAN started and fuel cell is initialized with demand power ${power}W`,
+      description: `Fuel cell is initialized with demand power ${power} W`,
       status: 'success',
       duration: 5000,
       isClosable: true,
@@ -57,7 +64,6 @@ const FuelCell: React.FC = () => {
 
   const handleStop = () => {
     setStart(false)
-    FCController.changeStatus(power, isStart)
     clearToast({
       title: 'Done!',
       description: 'Fuel cell stopped',
@@ -68,6 +74,14 @@ const FuelCell: React.FC = () => {
   }
 
   const handleClear = () => {
+    Object.values(fuelCellSetStates).forEach(
+      (sets: React.Dispatch<React.SetStateAction<DataRecord>>) => {
+        sets((prevState: DataRecord) => ({
+          ...prevState,
+          value: 0,
+        }))
+      }
+    )
     clearToast({
       title: 'Done!',
       description: 'Cleared!',
@@ -83,19 +97,19 @@ const FuelCell: React.FC = () => {
         <VStack w="30%" justifyContent="center" alignItems="center">
           <Text fontSize="3xl">UP TIME</Text>
           <Text fontSize="3xl" fontWeight="bold" letterSpacing="wider">
-            {timeToString(fuelCellStates.hour)}:
-            {timeToString(fuelCellStates.minute)}:
-            {timeToString(fuelCellStates.second)}
+            {timeToString(fuelCellStates.hour.value)}:
+            {timeToString(fuelCellStates.minute.value)}:
+            {timeToString(fuelCellStates.second.value)}
           </Text>
         </VStack>
         <VStack w="40%" justifyContent="center">
           <CANSetting
             isStart={isStart}
             power={power}
-            canChannel={canChannel}
+            deviceType={deviceType}
             baudRate={baudRate}
             setPower={setPower}
-            setCanChannel={setCanChannel}
+            setDeviceType={setDeviceType}
             setBaudRate={setBaudRate}
           />
         </VStack>
@@ -110,21 +124,9 @@ const FuelCell: React.FC = () => {
       </HStack>
 
       <HStack w="80%" justifyContent="center" spacing={2}>
-        <DataTableGrid
-          tablesData={Object.values(fuelCellStates) as DataRecord[]}
-        />
+        <DataTableGrid tablesData={Object.values(fuelCellStates)} />
         {showCharts && (
-          <Box
-            w="50%"
-            bg="cyan.200"
-            h="48"
-            m={4}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Text color="white">Chart</Text>
-          </Box>
+          <FCChart fuelCellStates={Object.values(fuelCellStates)} />
         )}
       </HStack>
     </VStack>
