@@ -103,7 +103,7 @@ const App: React.FC = () => {
           © Xi&#39;an Jiaotong University
         </Tab>
       </TabList>
-      <TabPanels py={3} h="100%">
+      <TabPanels h="100%">
         <TabPanel>
           <Home />
         </TabPanel>

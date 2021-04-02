@@ -31,7 +31,7 @@ const CANSetting = ({
   setBaudRate,
 }: CANSettingProps): JSX.Element => (
   <>
-    <HStack justifyContent="center" w={64}>
+    <HStack justifyContent="space-between" w={64}>
       <Text fontSize="sm">Demand Power:</Text>
       <NumberInput
         size="sm"
@@ -51,7 +51,7 @@ const CANSetting = ({
       </NumberInput>
     </HStack>
 
-    <HStack justifyContent="center" w={64}>
+    <HStack justifyContent="space-between" w={64}>
       <Text fontSize="sm">Device Type:</Text>
       <Select
         size="sm"
@@ -67,7 +67,7 @@ const CANSetting = ({
       </Select>
     </HStack>
 
-    <HStack justifyContent="center" w={64}>
+    <HStack justifyContent="space-between" w={64}>
       <Text fontSize="sm">CAN Baud Rate:</Text>
       <Select
         size="sm"

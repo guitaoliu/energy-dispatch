@@ -17,11 +17,12 @@ const Controller = ({
   handleStart,
   handleStop,
 }: ControllerProps): JSX.Element => (
-  <SimpleGrid columns={2} spacing={3}>
+  <SimpleGrid columns={2} spacing={2}>
     <Button
       leftIcon={<Icon as={VscDebugStart} boxSize={5} />}
       colorScheme="green"
       w="24"
+      letterSpacing="wider"
       isDisabled={isStart}
       onClick={handleStart}
     >
@@ -31,14 +32,15 @@ const Controller = ({
       leftIcon={<Icon as={MdSave} boxSize={5} />}
       colorScheme="blue"
       w="24"
+      letterSpacing="wider"
     >
       SAVE
     </Button>
     <Button
       leftIcon={<Icon as={VscDebugStop} boxSize={5} />}
       colorScheme="red"
-      variant="outline"
       w="24"
+      letterSpacing="wider"
       isDisabled={!isStart}
       onClick={handleStop}
     >
@@ -48,8 +50,9 @@ const Controller = ({
       leftIcon={<Icon as={MdDelete} boxSize={5} />}
       colorScheme="red"
       variant="outline"
-      onClick={handleClear}
       w="24"
+      letterSpacing="wider"
+      onClick={handleClear}
     >
       CLEAR
     </Button>

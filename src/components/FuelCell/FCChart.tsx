@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { VStack, Select, Text } from '@chakra-ui/react'
+import { VStack, HStack, Select, Text } from '@chakra-ui/react'
 import { Chart } from 'react-google-charts'
 import { DataRecord } from '../../types/fuelCell'
 
@@ -34,10 +34,10 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
   }, [source, fuelCellStates])
 
   return (
-    <VStack justifyContent="center">
-      <VStack w="96">
-        <Text fontSize="2xl" mb={2}>
-          Display Data
+    <VStack justifyContent="center" alignItems="center" mt={10}>
+      <HStack>
+        <Text fontSize="xl" mr={2}>
+          Please Select Source:
         </Text>
         <Select
           w="64"
@@ -54,7 +54,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
             >{`${record.source} - ${record.name}`}</option>
           ))}
         </Select>
-      </VStack>
+      </HStack>
 
       <Chart
         width="600px"
