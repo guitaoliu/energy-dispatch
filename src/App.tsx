@@ -20,7 +20,7 @@ import { BsFillLightningFill } from 'react-icons/bs'
 import { MdExpandLess, MdExpandMore } from 'react-icons/md'
 
 import FuelCell from './pages/FuelCell'
-import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
 import Devices from './pages/Devices'
 import Setting from './pages/Setting'
 import ACDC from './pages/ADDC'
@@ -29,7 +29,7 @@ const App: React.FC = () => {
   const { isOpen, onToggle, onClose } = useDisclosure()
   return (
     <Tabs variant="enclosed" isLazy orientation="vertical" h="100%">
-      <TabList py={3} bg="blue.400" w="60" shadow="2xl">
+      <TabList py={3} bg="blue.400" w="64" shadow="2xl">
         <Tab
           _selected={{ bg: 'white', color: 'black' }}
           onClick={onClose}
@@ -37,8 +37,8 @@ const App: React.FC = () => {
           my={2}
           justifyContent="flex-start"
         >
-          <Icon mr={2} as={GoDashboard} boxSize={5} />
-          <Text fontSize="lg" fontWeight="semibold" letterSpacing="wide">
+          <Icon mr={4} as={GoDashboard} boxSize={8} />
+          <Text fontSize="lg" fontWeight="semibold" letterSpacing="wider">
             Dashboard
           </Text>
         </Tab>
@@ -49,15 +49,15 @@ const App: React.FC = () => {
           my={2}
           justifyContent="flex-start"
         >
-          <Icon mr={2} as={GoServer} boxSize={5} />
-          <Text fontSize="lg" fontWeight="semibold" letterSpacing="wide">
+          <Icon mr={4} as={GoServer} boxSize={8} />
+          <Text fontSize="lg" fontWeight="semibold" letterSpacing="wider">
             Devices
           </Text>
           <Spacer />
           {isOpen ? (
-            <Icon as={MdExpandMore} boxSize={5} />
+            <Icon as={MdExpandMore} boxSize={8} />
           ) : (
-            <Icon as={MdExpandLess} boxSize={5} />
+            <Icon as={MdExpandLess} boxSize={8} />
           )}
         </Tab>
         <Collapse in={isOpen} animateOpacity>
@@ -68,8 +68,8 @@ const App: React.FC = () => {
               pl={8}
               justifyContent="flex-start"
             >
-              <Icon mr={2} as={GiCarBattery} boxSize={4} />
-              <Text fontSize="md" letterSpacing="wide">
+              <Icon mr={4} as={GiCarBattery} boxSize={6} />
+              <Text fontSize="md" fontWeight="semibold" letterSpacing="wider">
                 Fuel Cell
               </Text>
             </Tab>
@@ -79,8 +79,8 @@ const App: React.FC = () => {
               pl={8}
               justifyContent="flex-start"
             >
-              <Icon mr={2} as={BsFillLightningFill} boxSize={4} />
-              <Text fontSize="md" letterSpacing="wide">
+              <Icon mr={4} as={BsFillLightningFill} boxSize={6} />
+              <Text fontSize="md" fontWeight="semibold" letterSpacing="wider">
                 AC/DC
               </Text>
             </Tab>
@@ -93,19 +93,26 @@ const App: React.FC = () => {
           my={2}
           justifyContent="flex-start"
         >
-          <Icon mr={2} as={GoSettings} boxSize={5} />
-          <Text fontSize="lg" fontWeight="semibold" letterSpacing="wide">
+          <Icon mr={4} as={GoSettings} boxSize={8} />
+          <Text fontSize="lg" fontWeight="semibold" letterSpacing="wider">
             Setting
           </Text>
         </Tab>
         <Spacer />
-        <Tab color="white" isDisabled _hover={{ cursor: 'content-menu' }}>
+        <Text
+          color="white"
+          textAlign="center"
+          mb={4}
+          fontSize="lg"
+          fontWeight="semibold"
+          letterSpacing="wider"
+        >
           © Xi&#39;an Jiaotong University
-        </Tab>
+        </Text>
       </TabList>
-      <TabPanels h="100%">
-        <TabPanel>
-          <Home />
+      <TabPanels h="100%" bg="gray.50">
+        <TabPanel h="100%">
+          <Dashboard />
         </TabPanel>
         <TabPanel h="100%">
           <Devices />
@@ -113,7 +120,7 @@ const App: React.FC = () => {
         <TabPanel h="100%">
           <FuelCell />
         </TabPanel>
-        <TabPanel>
+        <TabPanel h="100%">
           <ACDC />
         </TabPanel>
         <TabPanel>
