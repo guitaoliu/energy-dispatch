@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-
 import {
   HStack,
   VStack,
+  Icon,
   Box,
   Text,
+  Tooltip,
   Button,
   Drawer,
   DrawerBody,
@@ -15,18 +16,17 @@ import {
   useToast,
   useDisclosure,
 } from '@chakra-ui/react'
+import { BiLineChart } from 'react-icons/bi'
 
 import Controller from '../components/FuelCell/Controller'
 import CANSetting from '../components/FuelCell/CANSetting'
 import DataTableGrid from '../components/FuelCell/DataTableGrid'
-
-import { DataRecord } from '../types/fuelCell'
+import FCChart from '../components/FuelCell/FCChart'
 import useFuelCell from '../hooks/useFuelCell'
 
-import timeToString from '../utils/timeToString'
-
 import { FuelCellController } from '../utils/eCan'
-import FCChart from '../components/FuelCell/FCChart'
+import { DataRecord } from '../types/fuelCell'
+import timeToString from '../utils/timeToString'
 
 const FCController = new FuelCellController()
 
@@ -110,9 +110,9 @@ const FuelCell: React.FC = () => {
   }
 
   return (
-    <Box m={5}>
+    <Box my={3}>
       <VStack justifyContent="center">
-        <HStack w="80%" justifyContent="space-between">
+        <HStack w="90%" justifyContent="space-between">
           <VStack w="30%" justifyContent="center" alignItems="center">
             <Text fontSize="3xl">UP TIME</Text>
             <Text fontSize="3xl" fontWeight="bold" letterSpacing="wider">
@@ -142,21 +142,24 @@ const FuelCell: React.FC = () => {
           </VStack>
         </HStack>
 
-        <HStack maxW="80%" justifyContent="center" spacing={2}>
+        <HStack maxW="90%" justifyContent="center" spacing={2}>
           <DataTableGrid tablesData={Object.values(fuelCellStates)} />
         </HStack>
       </VStack>
-      <Button
-        pos="absolute"
-        top={3}
-        right={3}
-        colorScheme="blue"
-        letterSpacing="wide"
-        shadow={2}
-        onClick={chartOnOpen}
-      >
-        OPEN CHART
-      </Button>
+
+      <Tooltip label="Open Chart">
+        <Button
+          pos="absolute"
+          top={3}
+          right={3}
+          colorScheme="blue"
+          letterSpacing="wide"
+          shadow={2}
+          onClick={chartOnOpen}
+        >
+          <Icon as={BiLineChart} boxSize={6} />
+        </Button>
+      </Tooltip>
       <Drawer
         isOpen={chartIsOpen}
         placement="right"

@@ -9,7 +9,7 @@ interface FCChartProps {
 }
 
 const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
-  const [data, setData] = useState<number[]>([0])
+  const [data, setData] = useState<number[][]>([[0, 0]])
   const [source, setSource] = useState<number>(1)
   const [currentRecord, setCurrentRecord] = useState<DataRecord>(
     fuelCellStates.filter((record) => record.id === source)[0]
@@ -19,8 +19,14 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
     const update = setInterval(() => {
       setData((prevState) =>
         prevState.length < 20
-          ? [...prevState, Math.random() + 10]
-          : [...prevState.slice(1), Math.random() + 10]
+          ? [
+              ...prevState,
+              [prevState[prevState.length - 1][0] + 1, Math.random() + 10],
+            ]
+          : [
+              ...prevState.slice(1),
+              [prevState[prevState.length - 1][0] + 1, Math.random() + 10],
+            ]
       )
     }, 500)
     return () => clearInterval(update)
@@ -43,7 +49,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
           w="64"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
             setSource(Number(event.target.value))
-            setData([0])
+            setData([[0, 0]])
           }}
           defaultValue={source}
         >
@@ -61,7 +67,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
         height="400px"
         chartType="LineChart"
         loader={<div>Loading Chart</div>}
-        data={[['x', currentRecord.name], ...data.map((d, k) => [k, d])]}
+        data={[['x', currentRecord.name], ...data]}
         options={{
           hAxis: {
             title: 'Time',
@@ -75,5 +81,4 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
     </VStack>
   )
 }
-
 export default FCChart
