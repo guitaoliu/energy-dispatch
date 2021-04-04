@@ -32,7 +32,7 @@ const Devices: React.FC = () => (
   <Flex justifyContent="center" alignItems="center" h="100%">
     <Table
       variant="simple"
-      maxW="80%"
+      maxW="2xl"
       colorScheme="blue"
       boxShadow="outline"
       rounded="md"
