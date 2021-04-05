@@ -91,12 +91,6 @@ const INIT_CONFIG = new StructType({
   Mode: UCHAR,
 })
 
-const FILTER_RECORD = new StructType({
-  ExtFrame: DWORD,
-  Start: DWORD,
-  End: DWORD,
-})
-
 /**
  * ffi binding for ECanVic64.dll
  */
@@ -329,7 +323,7 @@ export class FuelCellController {
     this.power = power === undefined ? this.power : power
     this.isStart = isStart === undefined ? this.isStart : isStart
     const data = new Uint8Array([
-      isStart ? 1 : 0,
+      this.isStart ? 1 : 0,
       // eslint-disable-next-line no-bitwise
       this.power & 0x000000ff,
       // eslint-disable-next-line no-bitwise
