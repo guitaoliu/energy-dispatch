@@ -12,17 +12,20 @@ export interface DataTableGridProps {
 const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
   const output = {
     name: 'Output and Load',
-    data: tablesData.filter(
-      (data) => data.source === 'Output' || data.source === 'DCDC'
-    ),
+    data: tablesData
+      .filter((data) => data.source === 'Output' || data.source === 'Load')
+      .map((data) => ({
+        ...data,
+        name: `${data.source} ${data.name}`,
+      })),
   }
   const powerStack = {
     name: 'Power Stack',
     data: tablesData.filter((data) => data.source === 'Power Stack'),
   }
-  const load = {
-    name: 'Load',
-    data: tablesData.filter((data) => data.source === 'Load'),
+  const dcdc = {
+    name: 'DCDC',
+    data: tablesData.filter((data) => data.source === 'DCDC'),
   }
   const concentration = {
     name: 'Concentration',
@@ -51,7 +54,7 @@ const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
         <DataTable name={powerStack.name} data={powerStack.data} />
       </GridItem>
       <GridItem>
-        <DataTable name={load.name} data={load.data} />
+        <DataTable name={dcdc.name} data={dcdc.data} />
       </GridItem>
       <GridItem>
         <DataTable name={concentration.name} data={concentration.data} />

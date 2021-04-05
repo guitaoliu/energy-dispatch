@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import {
   HStack,
   VStack,
@@ -28,9 +28,9 @@ import { FuelCellController } from '../utils/eCan'
 import { DataRecord } from '../types/fuelCell'
 import timeToString from '../utils/timeToString'
 
-const FCController = new FuelCellController()
-
 const FuelCell: React.FC = () => {
+  const FCController = useMemo(() => new FuelCellController(), [])
+
   // Fuel Cell Data
   const { states: fuelCellStates, setStates: fuelCellSetStates } = useFuelCell(
     0
@@ -43,7 +43,7 @@ const FuelCell: React.FC = () => {
   const [deviceType, setDeviceType] = useState<number>(0)
 
   // Render control
-  const clearToast = useToast()
+  const toast = useToast()
   const {
     isOpen: chartIsOpen,
     onOpen: chartOnOpen,
@@ -52,26 +52,169 @@ const FuelCell: React.FC = () => {
 
   // Initialize CAN bus while rendering the page
   useEffect(() => {
-    FCController.open()
+    if (FCController.open() === 0) {
+      toast({
+        title: 'Error',
+        description: 'Device Open Error',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+    if (FCController.init(false, baudRate) === 0) {
+      toast({
+        title: 'Error',
+        description: 'CAN Bus Initialize Error',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+    if (FCController.start() === 0) {
+      toast({
+        title: 'Error',
+        description: 'CAN Bus Start Error',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
     return () => {
-      FCController.close()
+      console.log(FCController.close())
     }
   }, [])
-
-  // Listen to device type change
-  useEffect(() => {
-    FCController.deviceTypeNumber = deviceType
-  }, [deviceType])
 
   // Listen to demand power change
   useEffect(() => {
     FCController.changeStatus(power, isStart)
   }, [power, isStart])
 
+  const handleUpdateDate = () => {
+    FCController.update()
+
+    fuelCellSetStates.setOutputCurrent((prevState) => ({
+      ...prevState,
+      value: FCController.outputCurrent,
+    }))
+    fuelCellSetStates.setOutputPower((prevState) => ({
+      ...prevState,
+      value: FCController.outputPower,
+    }))
+    fuelCellSetStates.setOutputVolt((prevState) => ({
+      ...prevState,
+      value: FCController.outputVolt,
+    }))
+    fuelCellSetStates.setDCDCCurrent((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcCurrent,
+    }))
+    fuelCellSetStates.setDCDCPower((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcVolt,
+    }))
+    fuelCellSetStates.setDCDCTemperature((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcTemperature,
+    }))
+    fuelCellSetStates.setPowerStackMaxNumber((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMaxNumber,
+    }))
+    fuelCellSetStates.setPowerStackMaxVolt((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMaxVolt,
+    }))
+    fuelCellSetStates.setPowerStackMinNumber((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMinNumber,
+    }))
+    fuelCellSetStates.setPowerStackMinVolt((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMinVolt,
+    }))
+    fuelCellSetStates.setConcentrationHydrogenRoom((prevState) => ({
+      ...prevState,
+      value: FCController.concentrationHydrogenRoom,
+    }))
+    fuelCellSetStates.setConcentrationSystemRoom((prevState) => ({
+      ...prevState,
+      value: FCController.concentrationSystemRoom,
+    }))
+    fuelCellSetStates.setPressureMainHydrogenBottle((prevState) => ({
+      ...prevState,
+      value: FCController.pressureMainHydrogenBottle,
+    }))
+    fuelCellSetStates.setPressureAttachedHydrogenBottle((prevState) => ({
+      ...prevState,
+      value: FCController.pressureAttachedHydrogenBottle,
+    }))
+    fuelCellSetStates.setPressureCoolingWater((prevState) => ({
+      ...prevState,
+      value: FCController.pressureCoolingWater,
+    }))
+    fuelCellSetStates.setPressureGas((prevState) => ({
+      ...prevState,
+      value: FCController.pressureGas,
+    }))
+    fuelCellSetStates.setPressureHydrogen((prevState) => ({
+      ...prevState,
+      value: FCController.pressureHydrogen,
+    }))
+    fuelCellSetStates.setLoadCurrent((prevState) => ({
+      ...prevState,
+      value: FCController.loadCurrent,
+    }))
+    fuelCellSetStates.setLoadVolt((prevState) => ({
+      ...prevState,
+      value: FCController.loadVolt,
+    }))
+    fuelCellSetStates.setTemperatureCoolingWaterIn((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureCoolingWaterIn,
+    }))
+    fuelCellSetStates.setTemperatureCoolingWaterOut((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureCoolingWaterOut,
+    }))
+    fuelCellSetStates.setTemperatureGasIn((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureGasIn,
+    }))
+    fuelCellSetStates.setTemperatureGasOut((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureGasOut,
+    }))
+    fuelCellSetStates.setTemperatureSystemCabinet((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureSystemCabinet,
+    }))
+    fuelCellSetStates.setHour((prevState) => ({
+      ...prevState,
+      value: FCController.hour,
+    }))
+    fuelCellSetStates.setMinute((prevState) => ({
+      ...prevState,
+      value: FCController.minute,
+    }))
+    fuelCellSetStates.setSecond((prevState) => ({
+      ...prevState,
+      value: FCController.second,
+    }))
+  }
+
+  useEffect(() => {
+    const updateData = setInterval(() => {
+      if (isStart) {
+        handleUpdateDate()
+      }
+    }, 500)
+    return () => clearInterval(updateData)
+  }, [isStart])
+
   const handleStart = () => {
     setStart(true)
-    FCController.init(false, baudRate)
-    clearToast({
+
+    toast({
       title: 'Done!',
       description: `Fuel cell is initialized with demand power ${power} W`,
       status: 'success',
@@ -82,7 +225,7 @@ const FuelCell: React.FC = () => {
 
   const handleStop = () => {
     setStart(false)
-    clearToast({
+    toast({
       title: 'Done!',
       description: 'Fuel cell stopped',
       status: 'success',
@@ -100,7 +243,7 @@ const FuelCell: React.FC = () => {
         }))
       }
     )
-    clearToast({
+    toast({
       title: 'Done!',
       description: 'Cleared!',
       status: 'success',

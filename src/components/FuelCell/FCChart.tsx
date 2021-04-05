@@ -29,6 +29,22 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
             ]
       )
     }, 500)
+
+    // todo update for production
+    // const update = setInterval(() => {
+    //   setData((prevState) =>
+    //     prevState.length < 20
+    //       ? [
+    //           ...prevState,
+    //           [prevState[prevState.length - 1][0] + 1, currentRecord.value],
+    //         ]
+    //       : [
+    //           ...prevState.slice(1),
+    //           [prevState[prevState.length - 1][0] + 1, currentRecord.value],
+    //         ]
+    //   )
+    // })
+
     return () => clearInterval(update)
   }, [])
 
@@ -37,7 +53,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
       (record) => record.id === source
     )[0]
     setCurrentRecord(selectedRecord)
-  }, [source, fuelCellStates])
+  }, [source])
 
   return (
     <VStack justifyContent="center" alignItems="center" mt={10}>

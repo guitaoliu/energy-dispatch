@@ -9,6 +9,7 @@ export interface FuelCellData {
   DCDCVolt: DataRecord
   DCDCCurrent: DataRecord
   DCDCPower: DataRecord
+  DCDCTemperature: DataRecord
   powerStackMinVolt: DataRecord
   powerStackMinNumber: DataRecord
   powerStackMaxVolt: DataRecord
@@ -39,6 +40,7 @@ export interface FuelCellSetState {
   setDCDCVolt: React.Dispatch<React.SetStateAction<DataRecord>>
   setDCDCCurrent: React.Dispatch<React.SetStateAction<DataRecord>>
   setDCDCPower: React.Dispatch<React.SetStateAction<DataRecord>>
+  setDCDCTemperature: React.Dispatch<React.SetStateAction<DataRecord>>
   setPowerStackMinVolt: React.Dispatch<React.SetStateAction<DataRecord>>
   setPowerStackMinNumber: React.Dispatch<React.SetStateAction<DataRecord>>
   setPowerStackMaxVolt: React.Dispatch<React.SetStateAction<DataRecord>>
@@ -116,48 +118,55 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
     value: initValue,
     unit: 'W',
   })
-  const [powerStackMinVolt, setPowerStackMinVolt] = useState<DataRecord>({
+  const [DCDCTemperature, setDCDCTemperature] = useState<DataRecord>({
     id: 7,
+    source: 'DCDC',
+    name: 'Temperature',
+    value: initValue,
+    unit: '℃',
+  })
+  const [powerStackMinVolt, setPowerStackMinVolt] = useState<DataRecord>({
+    id: 8,
     source: 'Power Stack',
     name: 'Min Volt',
     value: initValue,
     unit: 'V',
   })
   const [powerStackMinNumber, setPowerStackMinNumber] = useState<DataRecord>({
-    id: 8,
+    id: 9,
     source: 'Power Stack',
     name: 'Min Number',
     value: initValue,
   })
   const [powerStackMaxVolt, setPowerStackMaxVolt] = useState<DataRecord>({
-    id: 9,
+    id: 10,
     source: 'Power Stack',
     name: 'Max Volt',
     value: initValue,
     unit: 'V',
   })
   const [powerStackMaxNumber, setPowerStackMaxNumber] = useState<DataRecord>({
-    id: 10,
+    id: 11,
     source: 'Power Stack',
     name: 'Max Number',
     value: initValue,
   })
   const [pressureHydrogen, setPressureHydrogen] = useState<DataRecord>({
-    id: 11,
+    id: 12,
     source: 'Pressure',
     name: 'Hydrogen',
     value: initValue,
     unit: 'bar',
   })
   const [pressureCoolingWater, setPressureCoolingWater] = useState<DataRecord>({
-    id: 12,
+    id: 13,
     source: 'Pressure',
     name: 'Cooling Water',
     value: initValue,
     unit: 'bar',
   })
   const [pressureGas, setPressureGas] = useState<DataRecord>({
-    id: 13,
+    id: 14,
     source: 'Pressure',
     name: 'Gas',
     value: initValue,
@@ -166,7 +175,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [pressureMainHydrogenBottle, setPressureMainHydrogenBottle] = useState<
     DataRecord
   >({
-    id: 14,
+    id: 15,
     source: 'Pressure',
     name: 'Main Hydrogen Bottle',
     value: initValue,
@@ -176,21 +185,21 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
     pressureAttachedHydrogenBottle,
     setPressureAttachedHydrogenBottle,
   ] = useState<DataRecord>({
-    id: 15,
+    id: 16,
     source: 'Pressure',
     name: 'Attached Hydrogen Bottle',
     value: initValue,
     unit: 'Mpa',
   })
   const [loadVolt, setLoadVolt] = useState<DataRecord>({
-    id: 16,
+    id: 17,
     source: 'Load',
     name: 'Volt',
     value: initValue,
     unit: 'V',
   })
   const [loadCurrent, setLoadCurrent] = useState<DataRecord>({
-    id: 17,
+    id: 18,
     source: 'Load',
     name: 'Current',
     value: initValue,
@@ -199,7 +208,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [concentrationSystemRoom, setConcentrationSystemRoom] = useState<
     DataRecord
   >({
-    id: 18,
+    id: 19,
     source: 'Concentration',
     name: 'System Room',
     value: initValue,
@@ -208,21 +217,21 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [concentrationHydrogenRoom, setConcentrationHydrogenRoom] = useState<
     DataRecord
   >({
-    id: 19,
+    id: 20,
     source: 'Concentration',
     name: 'Hydrogen Room',
     value: initValue,
     unit: 'ppm',
   })
   const [temperatureGasIn, setTemperatureGasIn] = useState<DataRecord>({
-    id: 20,
+    id: 21,
     source: 'Temperature',
     name: 'Gas In',
     value: initValue,
     unit: '℃',
   })
   const [temperatureGasOut, setTemperatureGasOut] = useState<DataRecord>({
-    id: 21,
+    id: 22,
     source: 'Temperature',
     name: 'Gas Out',
     value: initValue,
@@ -231,7 +240,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [temperatureCoolingWaterIn, setTemperatureCoolingWaterIn] = useState<
     DataRecord
   >({
-    id: 22,
+    id: 23,
     source: 'Temperature',
     name: 'Cooling Water In',
     value: initValue,
@@ -240,7 +249,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [temperatureCoolingWaterOut, setTemperatureCoolingWaterOut] = useState<
     DataRecord
   >({
-    id: 23,
+    id: 24,
     source: 'Temperature',
     name: 'Cooling Water Out',
     value: initValue,
@@ -249,26 +258,26 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [temperatureSystemCabinet, setTemperatureSystemCabinet] = useState<
     DataRecord
   >({
-    id: 24,
+    id: 25,
     source: 'Temperature',
     name: 'System Cabinet',
     value: initValue,
     unit: '℃',
   })
   const [hour, setHour] = useState<DataRecord>({
-    id: 25,
+    id: 26,
     source: 'Up Time',
     name: 'hour',
     value: initValue,
   })
   const [minute, setMinute] = useState<DataRecord>({
-    id: 26,
+    id: 27,
     source: 'Up Time',
     name: 'minute',
     value: initValue,
   })
   const [second, setSecond] = useState<DataRecord>({
-    id: 27,
+    id: 28,
     source: 'Up Time',
     name: 'minute',
     value: initValue,
@@ -282,6 +291,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
       DCDCCurrent,
       DCDCVolt,
       DCDCPower,
+      DCDCTemperature,
 
       powerStackMaxNumber,
       powerStackMaxVolt,
@@ -318,6 +328,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
       setDCDCPower,
       setDCDCCurrent,
       setDCDCVolt,
+      setDCDCTemperature,
 
       setPowerStackMaxNumber,
       setPowerStackMaxVolt,

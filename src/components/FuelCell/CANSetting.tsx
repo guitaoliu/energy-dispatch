@@ -22,7 +22,6 @@ export interface CANSettingProps {
 }
 
 const CANSetting = ({
-  isStart,
   power,
   setPower,
   deviceType,
@@ -60,7 +59,7 @@ const CANSetting = ({
           setDeviceType(Number(event.target.value))
         }}
         defaultValue={deviceType}
-        isDisabled={isStart}
+        isDisabled
       >
         <option value="0">USB CAN I</option>
         <option value="1">USB CAN II</option>
@@ -76,7 +75,7 @@ const CANSetting = ({
           setBaudRate(Number(event.target.value) * 1000)
         }}
         defaultValue={baudRate / 1000}
-        isDisabled={isStart}
+        isDisabled
       >
         <option value="5">5 kBit/s</option>
         <option value="10">10 kBit/s</option>
