@@ -1,22 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import {
-  VStack,
-  HStack,
-  Flex,
-  Spacer,
-  Circle,
-  Divider,
-  Text,
-  Button,
-  Switch,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-} from '@chakra-ui/react'
+import { VStack, HStack, Spacer, Text } from '@chakra-ui/react'
 import faker from 'faker'
+
+import Log, { LogRecord } from '../components/Dashboard/Log'
+import Devices from '../components/Dashboard/Devices'
+import Spotlight from '../components/Dashboard/Spotlight/Spotlight'
 
 const devices = [
   {
@@ -35,22 +23,15 @@ const devices = [
   },
 ]
 
-type Log = {
-  id: string
-  content: string
-  level: string
-  time: number
-}
-
-const logsTemp: Log[] = [
+const logsTemp: LogRecord[] = [
   {
-    id: faker.datatype.uuid(),
+    id: '0',
     level: 'info',
     content: 'Device Fuel Cell is online',
     time: new Date().getTime(),
   },
   {
-    id: faker.datatype.uuid(),
+    id: '1',
     level: 'debug',
     content: 'Device AC/DC is offline',
     time: new Date().getTime(),
@@ -58,10 +39,9 @@ const logsTemp: Log[] = [
 ]
 
 const Dashboard: React.FC = () => {
-  const [isUpdating, setIsUpdating] = useState<boolean>(true)
   const [isLogStart, setIsLogStart] = useState<boolean>(false)
 
-  const [logs, setLogs] = useState<Log[]>(logsTemp)
+  const [logs, setLogs] = useState<LogRecord[]>(logsTemp)
 
   useEffect(() => {
     const generateLogs = setInterval(() => {
@@ -87,154 +67,15 @@ const Dashboard: React.FC = () => {
       <HStack w="90%">
         <Text fontSize="2xl">Overview</Text>
         <Spacer />
-        <Text fontSize="xl">Updating</Text>
-        <Switch
-          colorScheme="teal"
-          size="lg"
-          isChecked={isUpdating}
-          onChange={() => {
-            setIsUpdating(!isUpdating)
-          }}
-        />
       </HStack>
-      <HStack w="90%" justifyContent="space-between">
-        <Flex
-          w={56}
-          h={32}
-          bg="white"
-          boxShadow="base"
-          justifyContent="center"
-          alignItems="center"
-        >
-          One
-        </Flex>
-        <Flex
-          w={56}
-          h={32}
-          bg="white"
-          boxShadow="base"
-          justifyContent="center"
-          alignItems="center"
-        >
-          One
-        </Flex>
-        <Flex
-          w={56}
-          h={32}
-          bg="white"
-          boxShadow="base"
-          justifyContent="center"
-          alignItems="center"
-        >
-          One
-        </Flex>
-      </HStack>
-      <VStack
-        w="90%"
-        bg="white"
-        p={3}
-        justifyContent="center"
-        alignItems="center"
-        boxShadow="base"
-      >
-        <Text alignSelf="flex-start" fontSize="lg" letterSpacing="wide">
-          Devices Overall Information
-        </Text>
-        <Table colorScheme="twitter" size="sm">
-          <Thead>
-            <Tr>
-              <Th>Devices</Th>
-              <Th>Online Status</Th>
-              <Th isNumeric>Output Power</Th>
-              <Th isNumeric>Consume Power</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {devices.map((device) => (
-              <Tr key={device.id}>
-                <Td>{device.name}</Td>
-                <Td>
-                  {device.status ? (
-                    <HStack>
-                      <Circle size={3} bg="green.400" />
-                      <Text>Online</Text>
-                    </HStack>
-                  ) : (
-                    <HStack>
-                      <Circle size={3} bg="red.400" />
-                      <Text>Offline</Text>
-                    </HStack>
-                  )}
-                </Td>
-                <Td isNumeric>{device.outputPower} w</Td>
-                <Td isNumeric>{device.consumePower} w</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </VStack>
-      <VStack
-        w="90%"
-        bg="white"
-        p={3}
-        justifyContent="center"
-        alignItems="center"
-        boxShadow="base"
-      >
-        <HStack w="full">
-          <Text fontSize="lg" letterSpacing="wide">
-            Log
-          </Text>
-          <Spacer />
-          <Button
-            letterSpacing="wider"
-            size="sm"
-            colorScheme="green"
-            onClick={() => {
-              setLogs([])
-            }}
-          >
-            Clear
-          </Button>
-          {isLogStart ? (
-            <Button
-              size="sm"
-              letterSpacing="wider"
-              colorScheme="red"
-              onClick={() => {
-                setIsLogStart(false)
-              }}
-            >
-              Stop
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              letterSpacing="wider"
-              colorScheme="blue"
-              onClick={() => {
-                setIsLogStart(true)
-              }}
-            >
-              Start
-            </Button>
-          )}
-        </HStack>
-        <Divider />
-        <VStack w="100%" h={48} overflowY="scroll">
-          {logs.map((log, idx) => (
-            <>
-              {idx !== 0 && <Divider size="sm" />}
-              <HStack w="98%" key={log.id} fontSize="sm">
-                <Text w={16}>{log.level.toUpperCase()}</Text>
-                <Text>{log.content}</Text>
-                <Spacer w="95%" />
-                <Text>{new Date(log.time).toLocaleString()}</Text>
-              </HStack>
-            </>
-          ))}
-        </VStack>
-      </VStack>
+      <Spotlight />
+      <Devices devices={devices} />
+      <Log
+        logs={logs}
+        isLogStart={isLogStart}
+        setIsLogStart={setIsLogStart}
+        setLogs={setLogs}
+      />
     </VStack>
   )
 }
