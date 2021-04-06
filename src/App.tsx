@@ -14,7 +14,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 
-import { GoDashboard, GoSettings, GoServer } from 'react-icons/go'
+import { GoDashboard, GoSettings, GoDeviceDesktop } from 'react-icons/go'
 import { GiCarBattery } from 'react-icons/gi'
 import { BsFillLightningFill } from 'react-icons/bs'
 import { MdExpandLess, MdExpandMore } from 'react-icons/md'
@@ -49,7 +49,7 @@ const App: React.FC = () => {
           my={2}
           justifyContent="flex-start"
         >
-          <Icon mr={4} as={GoServer} boxSize={8} />
+          <Icon mr={4} as={GoDeviceDesktop} boxSize={8} />
           <Text fontSize="lg" fontWeight="semibold" letterSpacing="wider">
             Devices
           </Text>
