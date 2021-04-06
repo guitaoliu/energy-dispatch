@@ -1,11 +1,11 @@
 import { remote } from 'electron'
 import fs from 'fs'
 
-export default function saveData(
+export default (
   data: string,
   title: string,
   defaultPath: string
-): NodeJS.ErrnoException | null {
+): NodeJS.ErrnoException | null => {
   remote.dialog
     .showSaveDialog({
       title,
@@ -13,8 +13,8 @@ export default function saveData(
       buttonLabel: 'Save',
       filters: [
         {
-          name: 'CSV file',
-          extensions: ['csv', 'text'],
+          name: 'JSON file',
+          extensions: ['json', 'text'],
         },
       ],
       properties: [],
@@ -25,10 +25,10 @@ export default function saveData(
         fs.writeFile(saveFilePath.toString(), data, (err) => err)
         return null
       }
-      throw new Error('Cannot save to that path')
+      throw new Error('Cannot save to selected path')
     })
     .catch((err) => {
-      console.error(err)
+      return err
     })
   return null
 }

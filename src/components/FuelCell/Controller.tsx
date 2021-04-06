@@ -8,6 +8,7 @@ export interface ControllerProps {
   isStart: boolean
   handleStart: () => void
   handleStop: () => void
+  handleSave: () => void
 }
 
 const Controller = ({
@@ -15,6 +16,7 @@ const Controller = ({
   isStart,
   handleStart,
   handleStop,
+  handleSave,
 }: ControllerProps): JSX.Element => (
   <SimpleGrid columns={2} spacing={2}>
     <Button
@@ -32,6 +34,7 @@ const Controller = ({
       colorScheme="blue"
       w="24"
       letterSpacing="wider"
+      onClick={handleSave}
     >
       SAVE
     </Button>

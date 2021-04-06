@@ -17,6 +17,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BiLineChart } from 'react-icons/bi'
+import os from 'os'
 
 import Controller from '../components/FuelCell/Controller'
 import CANSetting from '../components/FuelCell/CANSetting'
@@ -25,6 +26,7 @@ import FCChart from '../components/FuelCell/FCChart'
 import useFuelCell from '../hooks/useFuelCell'
 
 import { FuelCellController } from '../utils/eCan'
+import saveData from '../utils/saveData'
 import { DataRecord } from '../types/fuelCell'
 import timeToString from '../utils/timeToString'
 
@@ -211,6 +213,25 @@ const FuelCell: React.FC = () => {
     return () => clearInterval(updateData)
   }, [isStart])
 
+  const handleSave = () => {
+    const data = Object.values(fuelCellStates)
+    const homedir = os.homedir()
+    const err = saveData(
+      JSON.stringify(data, null, 2),
+      'Fuel Cell Current State',
+      homedir
+    )
+    if (err !== null) {
+      toast({
+        title: 'Cannot Save',
+        description: err.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+  }
+
   const handleStart = () => {
     setStart(true)
 
@@ -281,6 +302,7 @@ const FuelCell: React.FC = () => {
               isStart={isStart}
               handleStart={handleStart}
               handleStop={handleStop}
+              handleSave={handleSave}
             />
           </VStack>
         </HStack>
