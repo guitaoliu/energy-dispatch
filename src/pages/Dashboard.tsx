@@ -10,14 +10,14 @@ const devices = [
   {
     id: 0,
     name: 'Fuel Cell',
-    status: true,
+    online: true,
     outputPower: 0,
     consumePower: 0,
   },
   {
     id: 1,
     name: 'AC/DC Transformer',
-    status: false,
+    online: false,
     outputPower: 0,
     consumePower: 0,
   },

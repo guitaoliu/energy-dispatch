@@ -1,5 +1,14 @@
 import React from 'react'
-import { Button, Divider, HStack, Spacer, Text, VStack } from '@chakra-ui/react'
+import {
+  Button,
+  Divider,
+  HStack,
+  Spacer,
+  Text,
+  VStack,
+  Icon,
+} from '@chakra-ui/react'
+import { GoFile } from 'react-icons/go'
 
 export type LogRecord = {
   id: string
@@ -31,6 +40,7 @@ const Log = ({
       boxShadow="base"
     >
       <HStack w="full">
+        <Icon as={GoFile} boxSize={5} />
         <Text fontSize="lg" letterSpacing="wide">
           Log
         </Text>
@@ -70,7 +80,7 @@ const Log = ({
         )}
       </HStack>
       <Divider />
-      <VStack w="100%" h={48} overflowY="scroll">
+      <VStack w="100%" h={48} overflowY="auto">
         {logs.map((log, idx) => (
           <>
             {idx !== 0 && <Divider size="sm" />}
