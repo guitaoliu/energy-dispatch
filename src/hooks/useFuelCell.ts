@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { DataRecord } from '../types/fuelCell'
+import { CanStatus, DeviceType, FuelCellController } from '../utils/eCan'
 
 export interface FuelCellData {
   outputVolt: DataRecord
@@ -33,49 +34,20 @@ export interface FuelCellData {
   second: DataRecord
 }
 
-export interface FuelCellSetState {
-  setOutputVolt: React.Dispatch<React.SetStateAction<DataRecord>>
-  setOutputCurrent: React.Dispatch<React.SetStateAction<DataRecord>>
-  setOutputPower: React.Dispatch<React.SetStateAction<DataRecord>>
-  setDCDCVolt: React.Dispatch<React.SetStateAction<DataRecord>>
-  setDCDCCurrent: React.Dispatch<React.SetStateAction<DataRecord>>
-  setDCDCPower: React.Dispatch<React.SetStateAction<DataRecord>>
-  setDCDCTemperature: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPowerStackMinVolt: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPowerStackMinNumber: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPowerStackMaxVolt: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPowerStackMaxNumber: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPressureHydrogen: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPressureCoolingWater: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPressureGas: React.Dispatch<React.SetStateAction<DataRecord>>
-  setPressureMainHydrogenBottle: React.Dispatch<
-    React.SetStateAction<DataRecord>
-  >
-  setPressureAttachedHydrogenBottle: React.Dispatch<
-    React.SetStateAction<DataRecord>
-  >
-  setLoadVolt: React.Dispatch<React.SetStateAction<DataRecord>>
-  setLoadCurrent: React.Dispatch<React.SetStateAction<DataRecord>>
-  setConcentrationSystemRoom: React.Dispatch<React.SetStateAction<DataRecord>>
-  setConcentrationHydrogenRoom: React.Dispatch<React.SetStateAction<DataRecord>>
-  setTemperatureGasIn: React.Dispatch<React.SetStateAction<DataRecord>>
-  setTemperatureGasOut: React.Dispatch<React.SetStateAction<DataRecord>>
-  setTemperatureCoolingWaterIn: React.Dispatch<React.SetStateAction<DataRecord>>
-  setTemperatureCoolingWaterOut: React.Dispatch<
-    React.SetStateAction<DataRecord>
-  >
-  setTemperatureSystemCabinet: React.Dispatch<React.SetStateAction<DataRecord>>
-  setHour: React.Dispatch<React.SetStateAction<DataRecord>>
-  setMinute: React.Dispatch<React.SetStateAction<DataRecord>>
-  setSecond: React.Dispatch<React.SetStateAction<DataRecord>>
-}
-
 export interface FuelCellStatue {
   states: FuelCellData
-  setStates: FuelCellSetState
+  err: CanStatus
+  baudRate: number
+  setBaudRate: React.Dispatch<React.SetStateAction<number>>
+  isStart: boolean
+  setIsStart: React.Dispatch<React.SetStateAction<boolean>>
+  power: number
+  setPower: React.Dispatch<React.SetStateAction<number>>
+  deviceType: DeviceType
+  setDeviceType: React.Dispatch<React.SetStateAction<DeviceType>>
 }
 
-const useFuelCell = (initValue = 0): FuelCellStatue => {
+const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
   const [outputVolt, setOutputVolt] = useState<DataRecord>({
     id: 1,
     source: 'Output',
@@ -282,6 +254,161 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
     name: 'minute',
     value: initValue,
   })
+
+  // Setting control
+  const [isStart, setIsStart] = useState<boolean>(false)
+  const [baudRate, setBaudRate] = useState<number>(500000)
+  const [power, setPower] = useState<number>(500)
+  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.USBCANI)
+
+  const [err, setErr] = useState<CanStatus>(CanStatus.OK)
+
+  const FCController = useMemo(() => new FuelCellController(), [])
+  const updateState = () => {
+    FCController.update()
+    setOutputCurrent((prevState) => ({
+      ...prevState,
+      value: FCController.outputCurrent,
+    }))
+    setOutputPower((prevState) => ({
+      ...prevState,
+      value: FCController.outputPower,
+    }))
+    setOutputVolt((prevState) => ({
+      ...prevState,
+      value: FCController.outputVolt,
+    }))
+    setDCDCVolt((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcVolt,
+    }))
+    setDCDCCurrent((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcCurrent,
+    }))
+    setDCDCPower((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcVolt,
+    }))
+    setDCDCTemperature((prevState) => ({
+      ...prevState,
+      value: FCController.dcdcTemperature,
+    }))
+    setPowerStackMaxNumber((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMaxNumber,
+    }))
+    setPowerStackMaxVolt((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMaxVolt,
+    }))
+    setPowerStackMinNumber((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMinNumber,
+    }))
+    setPowerStackMinVolt((prevState) => ({
+      ...prevState,
+      value: FCController.powerStackMinVolt,
+    }))
+    setConcentrationHydrogenRoom((prevState) => ({
+      ...prevState,
+      value: FCController.concentrationHydrogenRoom,
+    }))
+    setConcentrationSystemRoom((prevState) => ({
+      ...prevState,
+      value: FCController.concentrationSystemRoom,
+    }))
+    setPressureMainHydrogenBottle((prevState) => ({
+      ...prevState,
+      value: FCController.pressureMainHydrogenBottle,
+    }))
+    setPressureAttachedHydrogenBottle((prevState) => ({
+      ...prevState,
+      value: FCController.pressureAttachedHydrogenBottle,
+    }))
+    setPressureCoolingWater((prevState) => ({
+      ...prevState,
+      value: FCController.pressureCoolingWater,
+    }))
+    setPressureGas((prevState) => ({
+      ...prevState,
+      value: FCController.pressureGas,
+    }))
+    setPressureHydrogen((prevState) => ({
+      ...prevState,
+      value: FCController.pressureHydrogen,
+    }))
+    setLoadCurrent((prevState) => ({
+      ...prevState,
+      value: FCController.loadCurrent,
+    }))
+    setLoadVolt((prevState) => ({
+      ...prevState,
+      value: FCController.loadVolt,
+    }))
+    setTemperatureCoolingWaterIn((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureCoolingWaterIn,
+    }))
+    setTemperatureCoolingWaterOut((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureCoolingWaterOut,
+    }))
+    setTemperatureGasIn((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureGasIn,
+    }))
+    setTemperatureGasOut((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureGasOut,
+    }))
+    setTemperatureSystemCabinet((prevState) => ({
+      ...prevState,
+      value: FCController.temperatureSystemCabinet,
+    }))
+    setHour((prevState) => ({
+      ...prevState,
+      value: FCController.hour,
+    }))
+    setMinute((prevState) => ({
+      ...prevState,
+      value: FCController.minute,
+    }))
+    setSecond((prevState) => ({
+      ...prevState,
+      value: FCController.second,
+    }))
+  }
+
+  // Initialize CAN bus while rendering the page
+  useEffect(() => {
+    setErr(
+      FCController.open() && FCController.init(baudRate) && FCController.start()
+    )
+
+    return () => {
+      setErr(FCController.changeStatus(0, false) && FCController.close())
+    }
+  }, [FCController])
+
+  // Listen to demand power change
+  useEffect(() => {
+    setErr(FCController.changeStatus(power, isStart))
+  }, [power, isStart])
+
+  useEffect(() => {
+    const update = setInterval(() => {
+      if (isStart) {
+        updateState()
+      }
+    }, interval)
+    return () => clearInterval(update)
+  }, [])
+
+  useEffect(() => {
+    FCController.deviceType = deviceType
+  }, [deviceType])
+
   return {
     states: {
       outputPower,
@@ -320,43 +447,15 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
       minute,
       second,
     },
-    setStates: {
-      setOutputPower,
-      setOutputCurrent,
-      setOutputVolt,
-
-      setDCDCPower,
-      setDCDCCurrent,
-      setDCDCVolt,
-      setDCDCTemperature,
-
-      setPowerStackMaxNumber,
-      setPowerStackMaxVolt,
-      setPowerStackMinVolt,
-      setPowerStackMinNumber,
-
-      setPressureAttachedHydrogenBottle,
-      setPressureCoolingWater,
-      setPressureGas,
-      setPressureHydrogen,
-      setPressureMainHydrogenBottle,
-
-      setLoadCurrent,
-      setLoadVolt,
-
-      setConcentrationSystemRoom,
-      setConcentrationHydrogenRoom,
-
-      setTemperatureCoolingWaterIn,
-      setTemperatureCoolingWaterOut,
-      setTemperatureGasIn,
-      setTemperatureGasOut,
-      setTemperatureSystemCabinet,
-
-      setHour,
-      setMinute,
-      setSecond,
-    },
+    err,
+    baudRate,
+    setBaudRate,
+    isStart,
+    setIsStart,
+    power,
+    setPower,
+    deviceType,
+    setDeviceType,
   }
 }
 

@@ -1,22 +1,23 @@
 import React from 'react'
 import { SimpleGrid, Button, Icon } from '@chakra-ui/react'
-import { MdSave, MdDelete } from 'react-icons/md'
+import { MdSave } from 'react-icons/md'
 import { VscDebugStart, VscDebugStop } from 'react-icons/vsc'
+import { BiLineChart } from 'react-icons/bi'
 
 export interface ControllerProps {
-  handleClear: () => void
   isStart: boolean
   handleStart: () => void
   handleStop: () => void
   handleSave: () => void
+  handleChartOpen: () => void
 }
 
 const Controller = ({
-  handleClear,
   isStart,
   handleStart,
   handleStop,
   handleSave,
+  handleChartOpen,
 }: ControllerProps): JSX.Element => (
   <SimpleGrid columns={2} spacing={2}>
     <Button
@@ -49,14 +50,14 @@ const Controller = ({
       STOP
     </Button>
     <Button
-      leftIcon={<Icon as={MdDelete} boxSize={5} />}
-      colorScheme="red"
+      leftIcon={<Icon as={BiLineChart} boxSize={5} />}
+      colorScheme="blue"
       variant="outline"
       w="24"
       letterSpacing="wider"
-      onClick={handleClear}
+      onClick={handleChartOpen}
     >
-      CLEAR
+      Charts
     </Button>
   </SimpleGrid>
 )

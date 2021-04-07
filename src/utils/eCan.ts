@@ -314,14 +314,9 @@ export class FuelCellController {
     this.canIndex = canIndex
   }
 
-  set deviceTypeNumber(deviceTypeNumber: number) {
-    this.deviceType =
-      deviceTypeNumber === 0 ? DeviceType.USBCANI : DeviceType.USBCANII
-  }
-
-  changeStatus(power?: number, isStart?: boolean): void {
-    this.power = power === undefined ? this.power : power
-    this.isStart = isStart === undefined ? this.isStart : isStart
+  changeStatus(power: number, isStart: boolean): CanStatus {
+    this.power = power
+    this.isStart = isStart
     const data = new Uint8Array([
       this.isStart ? 1 : 0,
       // eslint-disable-next-line no-bitwise
@@ -334,7 +329,7 @@ export class FuelCellController {
       0,
       0,
     ])
-    this.transmit(0x104, data)
+    return this.transmit(0x104, data)
   }
 
   open(): CanStatus {
@@ -346,8 +341,8 @@ export class FuelCellController {
   }
 
   init(
-    filterEnabled: boolean,
     baudRate: number,
+    filterEnabled = false,
     accCode = 0x00000000,
     accMask = 0xffffffff,
     mode = 0
@@ -381,7 +376,7 @@ export class FuelCellController {
     remote = false,
     extern = false,
     dataLen = 8
-  ): number {
+  ): CanStatus {
     const reserved = new RESERVED_ARRAY([0, 0, 0])
     const dataArray = new DATA_ARRAY(data)
     const canObj = new CAN_OBJ({
@@ -402,7 +397,7 @@ export class FuelCellController {
     )
   }
 
-  receive(id: number, sendType = 0, remote = false, extern = false): number {
+  receive(id: number, sendType = 0, remote = false, extern = false): CanStatus {
     const reserved = new RESERVED_ARRAY([0, 0, 0])
     const data = new DATA_ARRAY([0, 0, 0, 0, 0, 0, 0, 0])
     const canObj = new CAN_OBJ({
@@ -423,11 +418,12 @@ export class FuelCellController {
       1,
       0
     )
-    this.parseData(canObjPtr.deref(), data)
+    this.parseData(canObjPtr.deref())
     return status
   }
 
-  parseData(canObj: typeof CAN_OBJ, data: Uint8Array): void {
+  parseData(canObj: typeof CAN_OBJ): void {
+    const data = canObj.Data
     switch (canObj.ID) {
       case 0x401:
         this.outputVolt = (data[0] + data[1] * 256) * 0.1
@@ -481,8 +477,8 @@ export class FuelCellController {
   }
 
   update(): void {
-    const data = new ArrayType(BYTE)([0, 0, 0, 0, 0, 0, 0, 0])
-    this.transmit(0x16, data.ref())
+    const data = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0])
+    this.transmit(0x16, data)
     this.receive(0x16)
   }
 }
