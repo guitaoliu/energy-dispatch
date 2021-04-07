@@ -391,11 +391,12 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
     }
   }, [FCController])
 
-  // Listen to demand power change
+  // Listen to demand power and start state change
   useEffect(() => {
     setErr(FCController.changeStatus(power, isStart))
   }, [power, isStart])
 
+  // Set interval for update states
   useEffect(() => {
     const update = setInterval(() => {
       if (isStart) {
@@ -405,6 +406,7 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
     return () => clearInterval(update)
   }, [])
 
+  // Listen to device type change
   useEffect(() => {
     FCController.deviceType = deviceType
   }, [deviceType])

@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import {
-  HStack,
-  VStack,
   Box,
-  Text,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useToast,
+  HStack,
+  Text,
   useDisclosure,
+  useToast,
+  VStack,
 } from '@chakra-ui/react'
 import os from 'os'
 
@@ -23,6 +23,7 @@ import FCChart from '../components/FuelCell/FCChart'
 import useFuelCell from '../hooks/useFuelCell'
 import saveData from '../utils/saveData'
 import timeToString from '../utils/timeToString'
+import { CanStatus } from '../utils/eCan'
 
 const FuelCell: React.FC = () => {
   // Fuel Cell Data
@@ -66,38 +67,61 @@ const FuelCell: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    toast({
-      title: 'Error!',
-      description: 'Can not process that',
-      status: 'warning',
-      duration: 3000,
-      isClosable: true,
-    })
-  }, [FCErr])
-
   const handleStart = () => {
     setIsStart(true)
-
-    toast({
-      title: 'Done!',
-      description: `Fuel cell is initialized with demand power ${power} W`,
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-    })
+    if (FCErr === CanStatus.OK) {
+      toast({
+        title: 'Done!',
+        description: `Fuel cell is initialized with demand power ${power} W`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+      setIsStart(false)
+    } else {
+      toast({
+        title: 'Error!',
+        description: `Can not start Fuel Cell`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
 
   const handleStop = () => {
     setIsStart(false)
-    toast({
-      title: 'Done!',
-      description: 'Fuel cell stopped',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    })
+    if (FCErr === CanStatus.OK) {
+      toast({
+        title: 'Done!',
+        description: 'Fuel cell stopped',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+      setIsStart(true)
+    } else {
+      toast({
+        title: 'Error!',
+        description: `Can not stop fuel cell`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
+
+  useEffect(() => {
+    if (FCErr === CanStatus.ERR) {
+      toast({
+        title: 'Warning!',
+        description: 'Something went wrong',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+  }, [FCErr])
 
   return (
     <Box my={3}>
@@ -132,12 +156,10 @@ const FuelCell: React.FC = () => {
             />
           </VStack>
         </HStack>
-
         <HStack maxW="90%" justifyContent="center" spacing={2}>
           <DataTableGrid tablesData={Object.values(fuelCellStates)} />
         </HStack>
       </VStack>
-
       <Drawer
         isOpen={chartIsOpen}
         placement="right"
