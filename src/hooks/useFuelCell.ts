@@ -261,9 +261,11 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
   const [power, setPower] = useState<number>(500)
   const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.USBCANI)
 
+  // Error
   const [err, setErr] = useState<CanStatus>(CanStatus.OK)
 
   const FCController = useMemo(() => new FuelCellController(), [])
+
   const updateState = () => {
     FCController.update()
     setOutputCurrent((prevState) => ({
@@ -385,7 +387,6 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
     setErr(
       FCController.open() && FCController.init(baudRate) && FCController.start()
     )
-
     return () => {
       setErr(FCController.changeStatus(0, false) && FCController.close())
     }

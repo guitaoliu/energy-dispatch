@@ -376,7 +376,7 @@ export class FuelCellController {
     remote = false,
     extern = false,
     dataLen = 8
-  ): CanStatus {
+  ): number {
     const reserved = new RESERVED_ARRAY([0, 0, 0])
     const dataArray = new DATA_ARRAY(data)
     const canObj = new CAN_OBJ({
@@ -397,7 +397,7 @@ export class FuelCellController {
     )
   }
 
-  receive(id: number, sendType = 0, remote = false, extern = false): CanStatus {
+  receive(id: number, sendType = 0, remote = false, extern = false): number {
     const reserved = new RESERVED_ARRAY([0, 0, 0])
     const data = new DATA_ARRAY([0, 0, 0, 0, 0, 0, 0, 0])
     const canObj = new CAN_OBJ({
@@ -476,9 +476,12 @@ export class FuelCellController {
     }
   }
 
-  update(): void {
+  update(): CanStatus {
     const data = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0])
     this.transmit(0x16, data)
-    this.receive(0x16)
+    if (this.receive(0x16) === 0xffffffff) {
+      return CanStatus.ERR
+    }
+    return CanStatus.OK
   }
 }

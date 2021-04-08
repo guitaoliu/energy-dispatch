@@ -77,7 +77,6 @@ const FuelCell: React.FC = () => {
         duration: 3000,
         isClosable: true,
       })
-      setIsStart(false)
     } else {
       toast({
         title: 'Error!',
@@ -99,7 +98,6 @@ const FuelCell: React.FC = () => {
         duration: 3000,
         isClosable: true,
       })
-      setIsStart(true)
     } else {
       toast({
         title: 'Error!',
