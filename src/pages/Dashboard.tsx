@@ -3,15 +3,18 @@ import { VStack, HStack, Spacer, Text } from '@chakra-ui/react'
 import faker from 'faker'
 
 import Log, { LogRecord } from '../components/Dashboard/Log'
-import Devices from '../components/Dashboard/Devices'
+import Devices, { Device } from '../components/Dashboard/Devices'
 import Spotlight from '../components/Dashboard/Spotlight/Spotlight'
 
-const devices = [
+import useFuelCell from '../hooks/useFuelCell'
+import { CanStatus } from '../utils/eCan'
+
+const devices: Device[] = [
   {
     id: 0,
     name: 'Fuel Cell',
-    online: true,
-    outputPower: 0,
+    online: false,
+    outputPower: 12,
     consumePower: 0,
   },
   {
@@ -19,7 +22,7 @@ const devices = [
     name: 'AC/DC Transformer',
     online: false,
     outputPower: 0,
-    consumePower: 0,
+    consumePower: 11.4,
   },
 ]
 
@@ -40,7 +43,7 @@ const logsTemp: LogRecord[] = [
 
 const Dashboard: React.FC = () => {
   const [isLogStart, setIsLogStart] = useState<boolean>(false)
-
+  const { err: FCErr, states: FCStates } = useFuelCell()
   const [logs, setLogs] = useState<LogRecord[]>(logsTemp)
 
   useEffect(() => {
@@ -62,13 +65,21 @@ const Dashboard: React.FC = () => {
     }
   }, [isLogStart])
 
+  useEffect(() => {
+    devices[0].online = FCErr === CanStatus.OK
+  }, [FCErr])
+
+  useEffect(() => {
+    devices[0].outputPower = FCStates.outputPower.value
+  }, [FCStates])
+
   return (
     <VStack my={3} spacing={4}>
       <HStack w="90%">
         <Text fontSize="2xl">Overview</Text>
         <Spacer />
       </HStack>
-      <Spotlight />
+      <Spotlight devices={devices} />
       <Devices devices={devices} />
       <Log
         logs={logs}

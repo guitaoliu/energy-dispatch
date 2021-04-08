@@ -82,7 +82,7 @@ const Log = ({
       <Divider />
       <VStack w="100%" h={48} overflowY="auto">
         {logs.map((log, idx) => (
-          <>
+          <VStack w="full" key={log.id}>
             {idx !== 0 && <Divider size="sm" />}
             <HStack w="98%" key={log.id} fontSize="sm">
               <Text w={16}>{log.level.toUpperCase()}</Text>
@@ -90,7 +90,7 @@ const Log = ({
               <Spacer />
               <Text>{new Date(log.time).toLocaleString()}</Text>
             </HStack>
-          </>
+          </VStack>
         ))}
       </VStack>
     </VStack>

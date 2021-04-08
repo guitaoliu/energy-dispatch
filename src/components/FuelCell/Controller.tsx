@@ -23,7 +23,7 @@ const Controller = ({
     <Button
       leftIcon={<Icon as={VscDebugStart} boxSize={5} />}
       colorScheme="green"
-      w="24"
+      w={28}
       letterSpacing="wider"
       isDisabled={isStart}
       onClick={handleStart}
@@ -33,7 +33,7 @@ const Controller = ({
     <Button
       leftIcon={<Icon as={MdSave} boxSize={5} />}
       colorScheme="blue"
-      w="24"
+      w={28}
       letterSpacing="wider"
       onClick={handleSave}
     >
@@ -42,7 +42,7 @@ const Controller = ({
     <Button
       leftIcon={<Icon as={VscDebugStop} boxSize={5} />}
       colorScheme="red"
-      w="24"
+      w={28}
       letterSpacing="wider"
       isDisabled={!isStart}
       onClick={handleStop}
@@ -53,11 +53,11 @@ const Controller = ({
       leftIcon={<Icon as={BiLineChart} boxSize={5} />}
       colorScheme="blue"
       variant="outline"
-      w="24"
+      w={28}
       letterSpacing="wider"
       onClick={handleChartOpen}
     >
-      Charts
+      CHARTS
     </Button>
   </SimpleGrid>
 )
