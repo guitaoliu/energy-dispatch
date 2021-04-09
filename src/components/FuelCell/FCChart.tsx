@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { VStack, HStack, Select, Text } from '@chakra-ui/react'
+import { VStack, HStack, Select, Text, Spinner } from '@chakra-ui/react'
 import { Chart } from 'react-google-charts'
 import { DataRecord } from '../../types/fuelCell'
 
@@ -43,7 +43,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
     //           [prevState[prevState.length - 1][0] + 1, currentRecord.value],
     //         ]
     //   )
-    // })
+    // }, 500)
 
     return () => clearInterval(update)
   }, [])
@@ -82,7 +82,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
         width="600px"
         height="400px"
         chartType="LineChart"
-        loader={<div>Loading Chart</div>}
+        loader={<Spinner size="xl" color="blue.400" />}
         data={[['x', currentRecord.name], ...data]}
         options={{
           hAxis: {

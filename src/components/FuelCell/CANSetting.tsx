@@ -12,7 +12,6 @@ import {
 } from '@chakra-ui/react'
 
 export interface CANSettingProps {
-  isStart: boolean
   power: number
   deviceType: number
   baudRate: number
@@ -61,8 +60,8 @@ const CANSetting = ({
         defaultValue={deviceType}
         isDisabled
       >
-        <option value="0">USB CAN I</option>
-        <option value="1">USB CAN II</option>
+        <option value="3">USB CAN I</option>
+        <option value="4">USB CAN II</option>
       </Select>
     </HStack>
 
