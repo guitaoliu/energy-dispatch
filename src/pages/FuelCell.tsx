@@ -32,8 +32,10 @@ const FuelCell: React.FC = () => {
     err: FCErr,
     baudRate,
     setBaudRate,
-    isStart,
-    setIsStart,
+    isWork,
+    setIsWork,
+    isUpdating,
+    setIsUpdating,
     power,
     setPower,
     deviceType,
@@ -67,59 +69,23 @@ const FuelCell: React.FC = () => {
     }
   }
 
-  const handleStart = () => {
-    setIsStart(true)
-    if (FCErr === CanStatus.OK) {
-      toast({
-        title: 'Done!',
-        description: `Fuel cell is initialized with demand power ${power} W`,
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-    } else {
-      toast({
-        title: 'Error!',
-        description: `Can not start Fuel Cell`,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-    }
-  }
-
-  const handleStop = () => {
-    setIsStart(false)
-    if (FCErr === CanStatus.OK) {
-      toast({
-        title: 'Done!',
-        description: 'Fuel cell stopped',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-    } else {
-      toast({
-        title: 'Error!',
-        description: `Can not stop fuel cell`,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-    }
-  }
+  const handleToggleUpdating = () => setIsUpdating(!isUpdating)
+  const handleToggleFC = () => setIsWork(!isWork)
 
   useEffect(() => {
-    if (FCErr === CanStatus.ERR) {
-      toast({
-        title: 'Warning!',
-        description: 'Something went wrong',
-        status: 'warning',
-        duration: 3000,
-        isClosable: true,
-      })
-    }
-  }, [FCErr])
+    const checkErr = setInterval(() => {
+      if (FCErr === CanStatus.ERR) {
+        toast({
+          title: 'Warning!',
+          description: 'Something went wrong, checking after 5s.',
+          status: 'warning',
+          duration: 3000,
+          isClosable: true,
+        })
+      }
+    }, 5000)
+    return () => clearInterval(checkErr)
+  }, [])
 
   return (
     <Box my={3}>
@@ -135,7 +101,6 @@ const FuelCell: React.FC = () => {
           </VStack>
           <VStack w="30%" justifyContent="center">
             <CANSetting
-              isStart={isStart}
               power={power}
               deviceType={deviceType}
               baudRate={baudRate}
@@ -146,11 +111,12 @@ const FuelCell: React.FC = () => {
           </VStack>
           <VStack w="40%" justifyContent="center">
             <Controller
-              isStart={isStart}
-              handleStart={handleStart}
-              handleStop={handleStop}
+              isUpdating={isUpdating}
+              isWork={isWork}
+              handleToggleUpdating={handleToggleUpdating}
               handleSave={handleSave}
               handleChartOpen={chartOnOpen}
+              handleToggleFC={handleToggleFC}
             />
           </VStack>
         </HStack>

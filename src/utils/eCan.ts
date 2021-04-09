@@ -308,28 +308,26 @@ export class FuelCellController {
 
   isStart = false
 
-  constructor(deviceType = DeviceType.USBCANI, devIndex = 0, canIndex = 0) {
+  constructor(deviceType = DeviceType.USBCANII, devIndex = 0, canIndex = 0) {
     this.deviceType = deviceType
     this.devIndex = devIndex
     this.canIndex = canIndex
   }
 
-  changeStatus(power: number, isStart: boolean): CanStatus {
-    this.power = power
-    this.isStart = isStart
-    const data = new Uint8Array([
-      this.isStart ? 1 : 0,
+  changeStatus(power: number, isStart: boolean) {
+    const data = [
+      isStart ? 1 : 0,
       // eslint-disable-next-line no-bitwise
-      this.power & 0x000000ff,
+      power & 0x000000ff,
       // eslint-disable-next-line no-bitwise
-      (this.power & 0x0000ff00) >> 8,
+      (power & 0x0000ff00) >> 8,
       0,
       0,
       0,
       0,
       0,
-    ])
-    return this.transmit(0x104, data)
+    ]
+    this.transmit(0x104, data)
   }
 
   open(): CanStatus {
@@ -371,7 +369,7 @@ export class FuelCellController {
 
   transmit(
     id: number,
-    data: Uint8Array,
+    data: number[],
     sendType = 0,
     remote = false,
     extern = false,
@@ -410,16 +408,16 @@ export class FuelCellController {
       Reserved: reserved,
     })
     const canObjPtr = canObj.ref()
-    const status = ECANVic.Receive(
+    const len = ECANVic.Receive(
       this.deviceType,
       this.devIndex,
       this.canIndex,
       canObjPtr,
       1,
-      0
+      10
     )
     this.parseData(canObjPtr.deref())
-    return status
+    return len
   }
 
   parseData(canObj: typeof CAN_OBJ): void {
@@ -431,14 +429,10 @@ export class FuelCellController {
         this.outputPower = data[4] + data[5] * 256
         break
       case 0x402:
-        ;[
-          this.powerStackMinVolt,
-          this.powerStackMinNumber,
-          this.powerStackMaxVolt,
-          this.powerStackMaxNumber,
-        ] = data
-        this.powerStackMaxVolt *= 0.01
-        this.powerStackMinVolt *= 0.01
+        this.powerStackMinVolt = data[0] * 0.01
+        this.powerStackMinNumber = data[1] * 1
+        this.powerStackMaxVolt = data[2] * 0.01
+        this.powerStackMaxNumber = data[3] * 1
         break
       case 0x403:
         this.pressureGas = (data[0] + data[1] * 256) * 0.001
@@ -463,7 +457,9 @@ export class FuelCellController {
         this.concentrationHydrogenRoom = data[6] + data[7] * 256
         break
       case 0x407:
-        ;[this.hour, this.minute, this.second] = data
+        this.hour = data[0] * 1
+        this.minute = data[1] * 1
+        this.second = data[2] * 1
         break
       case 0x408:
         this.dcdcVolt = (data[0] + data[1] * 256) * 0.1
@@ -477,9 +473,8 @@ export class FuelCellController {
   }
 
   update(): CanStatus {
-    const data = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0])
-    this.transmit(0x16, data)
-    if (this.receive(0x16) === 0xffffffff) {
+    const rec = this.receive(0x16)
+    if (rec) {
       return CanStatus.ERR
     }
     return CanStatus.OK

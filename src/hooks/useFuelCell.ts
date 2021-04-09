@@ -39,15 +39,17 @@ export interface FuelCellStatue {
   err: CanStatus
   baudRate: number
   setBaudRate: React.Dispatch<React.SetStateAction<number>>
-  isStart: boolean
-  setIsStart: React.Dispatch<React.SetStateAction<boolean>>
+  isUpdating: boolean
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>
+  isWork: boolean
+  setIsWork: React.Dispatch<React.SetStateAction<boolean>>
   power: number
   setPower: React.Dispatch<React.SetStateAction<number>>
   deviceType: DeviceType
   setDeviceType: React.Dispatch<React.SetStateAction<DeviceType>>
 }
 
-const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
+const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
   const [outputVolt, setOutputVolt] = useState<DataRecord>({
     id: 1,
     source: 'Output',
@@ -256,15 +258,19 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
   })
 
   // Setting control
-  const [isStart, setIsStart] = useState<boolean>(false)
+  const [isUpdating, setIsUpdating] = useState<boolean>(false)
+  const [isWork, setIsWork] = useState<boolean>(false)
   const [baudRate, setBaudRate] = useState<number>(500000)
   const [power, setPower] = useState<number>(500)
-  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.USBCANI)
+  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.USBCANII)
 
   // Error
   const [err, setErr] = useState<CanStatus>(CanStatus.OK)
 
-  const FCController = useMemo(() => new FuelCellController(), [])
+  const FCController = useMemo(
+    () => new FuelCellController(DeviceType.USBCANII),
+    []
+  )
 
   const updateState = () => {
     FCController.update()
@@ -384,28 +390,28 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
 
   // Initialize CAN bus while rendering the page
   useEffect(() => {
-    setErr(
+    const errStart =
       FCController.open() && FCController.init(baudRate) && FCController.start()
-    )
+    setErr(errStart)
     return () => {
-      setErr(FCController.changeStatus(0, false) && FCController.close())
+      FCController.close()
     }
   }, [FCController])
 
   // Listen to demand power and start state change
   useEffect(() => {
-    setErr(FCController.changeStatus(power, isStart))
-  }, [power, isStart])
+    FCController.changeStatus(power, isWork)
+  }, [isWork])
 
   // Set interval for update states
   useEffect(() => {
     const update = setInterval(() => {
-      if (isStart) {
+      if (isUpdating) {
         updateState()
       }
     }, interval)
     return () => clearInterval(update)
-  }, [])
+  }, [isUpdating])
 
   // Listen to device type change
   useEffect(() => {
@@ -453,8 +459,10 @@ const useFuelCell = (initValue = 0, interval = 500): FuelCellStatue => {
     err,
     baudRate,
     setBaudRate,
-    isStart,
-    setIsStart,
+    isUpdating,
+    setIsUpdating,
+    isWork,
+    setIsWork,
     power,
     setPower,
     deviceType,
