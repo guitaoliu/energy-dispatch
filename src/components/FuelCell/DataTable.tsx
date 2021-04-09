@@ -33,4 +33,18 @@ const DataTable = ({ name, data }: DataTableProps): JSX.Element => (
   </Table>
 )
 
-export default DataTable
+const dataTablePropsAreEqual = (
+  prevProps: DataTableProps,
+  nextProps: DataTableProps
+): boolean => {
+  for (let i = 0; i < prevProps.data.length; i += 1) {
+    if (
+      prevProps.data[i].value.toFixed(3) !== nextProps.data[i].value.toFixed(3)
+    ) {
+      return false
+    }
+  }
+  return true
+}
+
+export default React.memo(DataTable, dataTablePropsAreEqual)
