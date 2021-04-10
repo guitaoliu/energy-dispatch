@@ -13,6 +13,7 @@ export interface ControllerProps {
   handleSave: () => void
   handleChartOpen: () => void
   handleToggleFC: () => void
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Controller = ({
@@ -22,6 +23,7 @@ const Controller = ({
   handleSave,
   handleChartOpen,
   handleToggleFC,
+  setIsUpdating,
 }: ControllerProps): JSX.Element => (
   <SimpleGrid columns={2} spacing={2}>
     {isUpdating ? (
@@ -60,7 +62,10 @@ const Controller = ({
       variant="outline"
       w={28}
       letterSpacing="wider"
-      onClick={handleChartOpen}
+      onClick={() => {
+        setIsUpdating(false)
+        handleChartOpen()
+      }}
     >
       CHARTS
     </Button>

@@ -87,6 +87,10 @@ const FuelCell: React.FC = () => {
     return () => clearInterval(checkErr)
   }, [])
 
+  useEffect(() => {
+    return setIsUpdating(false)
+  }, [])
+
   return (
     <Box my={3}>
       <VStack justifyContent="center">
@@ -113,10 +117,11 @@ const FuelCell: React.FC = () => {
             <Controller
               isUpdating={isUpdating}
               isWork={isWork}
-              handleToggleUpdating={handleToggleUpdating}
               handleSave={handleSave}
               handleChartOpen={chartOnOpen}
               handleToggleFC={handleToggleFC}
+              handleToggleUpdating={handleToggleUpdating}
+              setIsUpdating={setIsUpdating}
             />
           </VStack>
         </HStack>
