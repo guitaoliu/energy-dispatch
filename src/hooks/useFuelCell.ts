@@ -396,7 +396,7 @@ const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
     return () => {
       FCController.close()
     }
-  }, [FCController])
+  }, [])
 
   // Listen to demand power and start state change
   useEffect(() => {

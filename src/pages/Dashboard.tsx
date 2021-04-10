@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
     {
       id: 0,
       name: 'Fuel Cell',
-      online: FCErr.valueOf() === CanStatus.OK.valueOf(),
+      online: FCErr === CanStatus.OK,
       outputPower: FCStates.outputPower.value,
       consumePower: 0,
     },
@@ -54,22 +54,27 @@ const Dashboard: React.FC = () => {
     const update = setInterval(() => {
       setDevices(() => {
         const [fuelCell, transformer] = devices
-        fuelCell.online = FCErr.valueOf() === CanStatus.OK.valueOf()
+        fuelCell.online = FCErr === CanStatus.OK
         fuelCell.outputPower = FCStates.outputPower.value
         return [fuelCell, transformer]
       })
-      setOnlineDevice(
-        devices.map((device) => Number(device.online)).reduce((a, b) => a + b)
-      )
-      setOutputPower(
-        devices.map((device) => device.outputPower).reduce((a, b) => a + b)
-      )
-      setConsumePower(
-        devices.map((device) => device.consumePower).reduce((a, b) => a + b)
-      )
     }, 500)
     return () => clearInterval(update)
-  }, [])
+  }, [FCErr, FCStates])
+
+  useEffect(() => {}, [Devices])
+
+  useEffect(() => {
+    setOnlineDevice(() =>
+      devices.map((device) => Number(device.online)).reduce((a, b) => a + b)
+    )
+    setOutputPower(
+      devices.map((device) => device.outputPower).reduce((a, b) => a + b)
+    )
+    setConsumePower(
+      devices.map((device) => device.consumePower).reduce((a, b) => a + b)
+    )
+  }, [devices])
 
   useEffect(() => {
     const generateLogs = setInterval(() => {
