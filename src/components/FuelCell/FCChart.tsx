@@ -16,43 +16,24 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
   )
 
   useEffect(() => {
+    const selectedRecord = fuelCellStates.find((record) => record.id === source)
+    if (selectedRecord !== undefined) {
+      setCurrentRecord(selectedRecord)
+    }
     const update = setInterval(() => {
       setData((prevState) =>
         prevState.length < 20
           ? [
               ...prevState,
-              [prevState[prevState.length - 1][0] + 1, Math.random() + 10],
+              [prevState[prevState.length - 1][0] + 1, currentRecord.value],
             ]
           : [
               ...prevState.slice(1),
-              [prevState[prevState.length - 1][0] + 1, Math.random() + 10],
+              [prevState[prevState.length - 1][0] + 1, currentRecord.value],
             ]
       )
     }, 500)
-
-    // todo update for production
-    // const update = setInterval(() => {
-    //   setData((prevState) =>
-    //     prevState.length < 20
-    //       ? [
-    //           ...prevState,
-    //           [prevState[prevState.length - 1][0] + 1, currentRecord.value],
-    //         ]
-    //       : [
-    //           ...prevState.slice(1),
-    //           [prevState[prevState.length - 1][0] + 1, currentRecord.value],
-    //         ]
-    //   )
-    // }, 500)
-
     return () => clearInterval(update)
-  }, [])
-
-  useEffect(() => {
-    const selectedRecord = fuelCellStates.filter(
-      (record) => record.id === source
-    )[0]
-    setCurrentRecord(selectedRecord)
   }, [source])
 
   return (
