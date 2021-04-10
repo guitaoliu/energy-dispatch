@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 
 export interface CANSettingProps {
+  isWork: boolean
   power: number
   deviceType: number
   baudRate: number
@@ -21,6 +22,7 @@ export interface CANSettingProps {
 }
 
 const CANSetting = ({
+  isWork,
   power,
   setPower,
   deviceType,
@@ -40,6 +42,7 @@ const CANSetting = ({
         onChange={(value) => {
           setPower(Number(value))
         }}
+        isDisabled={isWork}
       >
         <NumberInputField />
         <NumberInputStepper>

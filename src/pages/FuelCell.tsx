@@ -105,6 +105,7 @@ const FuelCell: React.FC = () => {
           </VStack>
           <VStack w="30%" justifyContent="center">
             <CANSetting
+              isWork={isWork}
               power={power}
               deviceType={deviceType}
               baudRate={baudRate}
