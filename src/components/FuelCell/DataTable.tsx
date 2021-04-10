@@ -24,7 +24,7 @@ const DataTable = ({ name, data }: DataTableProps): JSX.Element => (
           <Td>{d.name}</Td>
           <Td isNumeric>
             {d.unit === undefined
-              ? d.value.toFixed(3)
+              ? d.value.toFixed(0)
               : `${d.value.toFixed(3)} ${d?.unit}`}
           </Td>
         </Tr>
