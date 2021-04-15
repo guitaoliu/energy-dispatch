@@ -60,7 +60,7 @@ const App: React.FC = () => {
             <Icon as={MdExpandLess} boxSize={8} />
           )}
         </Tab>
-        <Collapse in={isOpen} animateOpacity>
+        <Collapse in={!isOpen} animateOpacity>
           <Flex direction="column">
             <Tab
               _selected={{ bg: 'white', color: 'black' }}
