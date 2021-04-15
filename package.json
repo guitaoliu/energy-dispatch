@@ -45,7 +45,7 @@
       ],
       "extraResources": [
         "./assets/**",
-        "./lib/win/**"
+        "./lib/win32/**"
       ]
     },
     "linux": {
@@ -62,6 +62,11 @@
       "app": "src",
       "buildResources": "assets",
       "output": "release"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
     },
     "publish": {
       "provider": "github",
