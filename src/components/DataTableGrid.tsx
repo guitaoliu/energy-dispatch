@@ -3,7 +3,7 @@ import React from 'react'
 import { Grid, GridItem } from '@chakra-ui/react'
 
 import DataTable from './DataTable'
-import { DataRecord } from '../../types/fuelCell'
+import { DataRecord } from '../types/fuelCell'
 
 export interface DataTableGridProps {
   tablesData: DataRecord[]

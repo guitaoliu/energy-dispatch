@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { HStack, Spacer, Text, VStack } from '@chakra-ui/react'
 import faker from 'faker'
 
-import Log, { LogRecord } from '../components/Dashboard/Log'
-import Devices from '../components/Dashboard/Devices'
-import Spotlight from '../components/Dashboard/Spotlight/Spotlight'
+import Log, { LogRecord } from '../components/Log'
+import Devices from '../components/Devices'
+import Spotlight from '../components/Spotlight/Spotlight'
 
 import useFuelCell from '../hooks/useFuelCell'
 import { CanStatus } from '../utils/fuelCell'
@@ -96,9 +96,11 @@ const Dashboard: React.FC = () => {
   }, [isLogStart])
 
   return (
-    <VStack my={3} spacing={4}>
+    <VStack my={3} spacing={4} h="full">
       <HStack w="90%">
-        <Text fontSize="2xl">Overview</Text>
+        <Text fontSize="2xl" fontWeight="semibold">
+          Overview
+        </Text>
         <Spacer />
       </HStack>
       <Spotlight

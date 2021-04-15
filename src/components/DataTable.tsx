@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Table, Thead, Tbody, TableCaption, Tr, Th, Td } from '@chakra-ui/react'
 
-import { DataRecord } from '../../types/fuelCell'
+import { DataRecord } from '../types/fuelCell'
 
 export interface DataTableProps {
   name: string

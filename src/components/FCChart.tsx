@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { VStack, HStack, Select, Text, Spinner } from '@chakra-ui/react'
 import { Chart } from 'react-google-charts'
-import { DataRecord } from '../../types/fuelCell'
+import { DataRecord } from '../types/fuelCell'
 
 interface FCChartProps {
   fuelCellStates: DataRecord[]

@@ -15,10 +15,10 @@ import {
 } from '@chakra-ui/react'
 import os from 'os'
 
-import Controller from '../components/FuelCell/Controller'
-import CANSetting from '../components/FuelCell/CANSetting'
-import DataTableGrid from '../components/FuelCell/DataTableGrid'
-import FCChart from '../components/FuelCell/FCChart'
+import Controller from '../components/Controller'
+import CANSetting from '../components/CANSetting'
+import DataTableGrid from '../components/DataTableGrid'
+import FCChart from '../components/FCChart'
 
 import useFuelCell from '../hooks/useFuelCell'
 import saveData from '../utils/saveData'
@@ -92,7 +92,7 @@ const FuelCell: React.FC = () => {
   }, [])
 
   return (
-    <Box my={3}>
+    <Box my={3} h="full">
       <VStack justifyContent="center">
         <HStack w="90%" justifyContent="space-between">
           <VStack w="30%" justifyContent="center" alignItems="center">
