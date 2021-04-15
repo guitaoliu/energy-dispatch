@@ -1,7 +1,7 @@
 {
   "name": "energy-dispatch",
   "productName": "EnergyDisaptch",
-  "version": "0.9.5",
+  "version": "0.9.7",
   "description": "A app for fuel cell and other devices energy dispatch",
   "main": "./main.prod.js",
   "author": {

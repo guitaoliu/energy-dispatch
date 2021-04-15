@@ -11,6 +11,7 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import path from 'path'
+import os from 'os'
 import { app, BrowserWindow, shell } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
@@ -63,13 +64,28 @@ const createWindow = async () => {
     ? path.join(process.resourcesPath, 'assets')
     : path.join(__dirname, '../assets')
 
-  /**
-   * Add dll path to system path
-   */
-  process.env.path = `${process.env.path}${path.delimiter}${path.join(
-    RESOURCES_PATH,
-    'lib'
-  )}`
+  const LIB_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'lib')
+    : path.join(__dirname, '../lib')
+
+  switch (process.platform) {
+    case 'win32':
+      process.env.path = `${process.env.path}${path.delimiter}${path.join(
+        LIB_PATH,
+        'win',
+        os.arch() === 'x64' ? 'x64' : 'x86'
+      )}`
+      break
+    case 'linux':
+      process.env.path = `${process.env.path}${path.delimiter}${path.join(
+        LIB_PATH,
+        'linux',
+        os.arch() === 'x64' ? 'x64' : 'x86'
+      )}`
+      break
+    default:
+      break
+  }
 
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths)
