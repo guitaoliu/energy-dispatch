@@ -11,7 +11,6 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import path from 'path'
-import os from 'os'
 import { app, BrowserWindow, shell } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
@@ -68,27 +67,26 @@ const createWindow = async () => {
     ? path.join(process.resourcesPath, 'lib')
     : path.join(__dirname, '../lib')
 
-  switch (process.platform) {
-    case 'win32':
-      process.env.path = `${process.env.path}${path.delimiter}${path.join(
-        LIB_PATH,
-        'win',
-        os.arch() === 'x64' ? 'x64' : 'x86'
-      )}`
-      break
-    case 'linux':
-      process.env.path = `${process.env.path}${path.delimiter}${path.join(
-        LIB_PATH,
-        'linux',
-        os.arch() === 'x64' ? 'x64' : 'x86'
-      )}`
-      break
-    default:
-      break
-  }
+  const getLibPath = (...paths: string[]): string =>
+    path.join(LIB_PATH, ...paths)
 
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths)
+  }
+
+  const addToPath = (pathToFolder: string) => {
+    process.env.path = `${process.env.path}${path.delimiter}${pathToFolder}`
+  }
+
+  switch (process.platform) {
+    case 'win32':
+      addToPath(getLibPath(process.platform, process.arch))
+      break
+    case 'linux':
+      addToPath(getLibPath(process.platform, process.arch))
+      break
+    default:
+      break
   }
 
   mainWindow = new BrowserWindow({

@@ -7,7 +7,7 @@ import Devices from '../components/Dashboard/Devices'
 import Spotlight from '../components/Dashboard/Spotlight/Spotlight'
 
 import useFuelCell from '../hooks/useFuelCell'
-import { CanStatus } from '../utils/eCan'
+import { CanStatus } from '../utils/fuelCell'
 
 const logsTemp: LogRecord[] = [
   {
