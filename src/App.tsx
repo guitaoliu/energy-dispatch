@@ -28,7 +28,7 @@ import ACDC from './pages/ADDC'
 const App: React.FC = () => {
   const { isOpen, onToggle, onClose } = useDisclosure()
   return (
-    <Tabs variant="enclosed" isLazy orientation="vertical" h="100%">
+    <Tabs variant="enclosed" isLazy orientation="vertical" h="full">
       <TabList py={3} bg="blue.400" w="64" shadow="2xl">
         <Tab
           _selected={{ bg: 'white', color: 'black' }}
@@ -110,20 +110,20 @@ const App: React.FC = () => {
           © Xi&#39;an Jiaotong University
         </Text>
       </TabList>
-      <TabPanels h="100%" bg="gray.50">
-        <TabPanel h="100%">
+      <TabPanels h="full" bg="gray.50">
+        <TabPanel h="full">
           <Dashboard />
         </TabPanel>
-        <TabPanel h="100%">
+        <TabPanel h="full">
           <Devices />
         </TabPanel>
-        <TabPanel h="100%">
+        <TabPanel h="full">
           <FuelCell />
         </TabPanel>
-        <TabPanel h="100%">
+        <TabPanel h="full">
           <ACDC />
         </TabPanel>
-        <TabPanel>
+        <TabPanel h="full">
           <Setting />
         </TabPanel>
       </TabPanels>
