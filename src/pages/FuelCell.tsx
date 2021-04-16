@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import {
   Box,
+  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -8,19 +9,31 @@ import {
   DrawerHeader,
   DrawerOverlay,
   HStack,
+  Icon,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Select,
+  SimpleGrid,
   Text,
   useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react'
+
+import { VscDebugStart, VscDebugStop } from 'react-icons/vsc'
+import { MdSave } from 'react-icons/md'
+import { BiLineChart } from 'react-icons/bi'
+import { BsToggleOff, BsToggleOn } from 'react-icons/bs'
 import os from 'os'
 
-import Controller from '../components/Controller'
-import CANSetting from '../components/CANSetting'
 import DataTableGrid from '../components/DataTableGrid'
 import FCChart from '../components/FCChart'
 
 import useFuelCell from '../hooks/useFuelCell'
+
 import saveData from '../utils/saveData'
 import timeToString from '../utils/timeToString'
 import { CanStatus } from '../utils/fuelCell'
@@ -104,26 +117,141 @@ const FuelCell: React.FC = () => {
             </Text>
           </VStack>
           <VStack w="30%" justifyContent="center">
-            <CANSetting
-              isWork={isWork}
-              power={power}
-              deviceType={deviceType}
-              baudRate={baudRate}
-              setPower={setPower}
-              setDeviceType={setDeviceType}
-              setBaudRate={setBaudRate}
-            />
+            <HStack justifyContent="space-between" w={64}>
+              <Text fontSize="sm">Demand Power:</Text>
+              <NumberInput
+                size="sm"
+                w="50%"
+                defaultValue={power}
+                min={0}
+                max={5000}
+                onChange={(value) => {
+                  setPower(Number(value))
+                }}
+                isDisabled={isWork}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </HStack>
+
+            <HStack justifyContent="space-between" w={64}>
+              <Text fontSize="sm">Device Type:</Text>
+              <Select
+                size="sm"
+                w="50%"
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                  setDeviceType(Number(event.target.value))
+                }}
+                defaultValue={deviceType}
+                isDisabled
+              >
+                <option value="3">USB CAN I</option>
+                <option value="4">USB CAN II</option>
+              </Select>
+            </HStack>
+
+            <HStack justifyContent="space-between" w={64}>
+              <Text fontSize="sm">CAN Baud Rate:</Text>
+              <Select
+                size="sm"
+                w="50%"
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                  setBaudRate(Number(event.target.value) * 1000)
+                }}
+                defaultValue={baudRate / 1000}
+                isDisabled
+              >
+                <option value="5">5 kBit/s</option>
+                <option value="10">10 kBit/s</option>
+                <option value="20">20 kBit/s</option>
+                <option value="40">40 kBit/s</option>
+                <option value="50">50 kBit/s</option>
+                <option value="80">80 kBit/s</option>
+                <option value="100">100 kBit/s</option>
+                <option value="125">125 kBit/s</option>
+                <option value="200">200 kBit/s</option>
+                <option value="250">250 kBit/s</option>
+                <option value="400">400 kBit/s</option>
+                <option value="500">500 kBit/s</option>
+                <option value="666">600 kBit/s</option>
+                <option value="800">800 kBit/s</option>
+                <option value="1000">1 MBit/s</option>
+              </Select>
+            </HStack>
           </VStack>
           <VStack w="40%" justifyContent="center">
-            <Controller
-              isUpdating={isUpdating}
-              isWork={isWork}
-              handleSave={handleSave}
-              handleChartOpen={chartOnOpen}
-              handleToggleFC={handleToggleFC}
-              handleToggleUpdating={handleToggleUpdating}
-              setIsUpdating={setIsUpdating}
-            />
+            <SimpleGrid columns={2} spacing={2}>
+              {isUpdating ? (
+                <Button
+                  leftIcon={<Icon as={VscDebugStop} boxSize={5} />}
+                  colorScheme="red"
+                  w={28}
+                  letterSpacing="wider"
+                  onClick={handleToggleUpdating}
+                >
+                  STOP
+                </Button>
+              ) : (
+                <Button
+                  leftIcon={<Icon as={VscDebugStart} boxSize={5} />}
+                  colorScheme="green"
+                  w={28}
+                  letterSpacing="wider"
+                  onClick={handleToggleUpdating}
+                >
+                  UPDATE
+                </Button>
+              )}
+              <Button
+                leftIcon={<Icon as={MdSave} boxSize={5} />}
+                colorScheme="blue"
+                w={28}
+                letterSpacing="wider"
+                onClick={handleSave}
+              >
+                SAVE
+              </Button>
+              <Button
+                leftIcon={<Icon as={BiLineChart} boxSize={5} />}
+                colorScheme="blue"
+                variant="outline"
+                w={28}
+                letterSpacing="wider"
+                onClick={() => {
+                  setIsUpdating(false)
+                  chartOnOpen()
+                }}
+              >
+                CHARTS
+              </Button>
+              {isWork ? (
+                <Button
+                  leftIcon={<Icon as={BsToggleOn} boxSize={5} />}
+                  colorScheme="red"
+                  variant="outline"
+                  w={28}
+                  letterSpacing="wider"
+                  onClick={handleToggleFC}
+                >
+                  STOP
+                </Button>
+              ) : (
+                <Button
+                  leftIcon={<Icon as={BsToggleOff} boxSize={5} />}
+                  colorScheme="green"
+                  variant="outline"
+                  w={28}
+                  letterSpacing="wider"
+                  onClick={handleToggleFC}
+                >
+                  START
+                </Button>
+              )}
+            </SimpleGrid>
           </VStack>
         </HStack>
         <HStack maxW="90%" justifyContent="center" spacing={2}>
