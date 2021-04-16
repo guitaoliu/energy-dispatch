@@ -18,13 +18,17 @@ import { AiOutlineArrowRight } from 'react-icons/ai'
 
 import RadioGroup from '../components/RadioGroup/RadioGroup'
 import { SettingCard, SettingItem } from '../components/SettingCard'
+import useSystemColorMode from '../hooks/useSystemColorMode'
 
 const LogLevelOptions = ['debug', 'info', 'warning', 'error']
 
 const Setting: React.FC = () => {
   const [logLevel, setLogLevel] = useState<string>('info')
   const [fetchingInterval, setFetchingInterval] = useState<number>(100)
-  const [followSystemTheme, setFollowSystemTheme] = useState<boolean>(false)
+  const {
+    isUseSystemColorMode,
+    toggleIsUseSystemColorMode,
+  } = useSystemColorMode()
 
   const { colorMode, toggleColorMode } = useColorMode()
   return (
@@ -78,7 +82,7 @@ const Setting: React.FC = () => {
         </SettingCard>
         <SettingCard name="Appearance">
           {
-            (!followSystemTheme && (
+            (!isUseSystemColorMode && (
               <SettingItem name="Theme">
                 <RadioGroup
                   options={['light', 'dark']}
@@ -91,8 +95,8 @@ const Setting: React.FC = () => {
           <SettingItem name="Follow System Theme">
             <Switch
               size="lg"
-              defaultChecked={followSystemTheme}
-              onChange={() => setFollowSystemTheme(!followSystemTheme)}
+              defaultChecked={isUseSystemColorMode}
+              onChange={toggleIsUseSystemColorMode}
             />
           </SettingItem>
           <SettingItem name="Font Family">

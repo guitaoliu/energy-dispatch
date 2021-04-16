@@ -12,12 +12,21 @@ import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import path from 'path'
 import fs from 'fs'
-import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  dialog,
+  IpcMainInvokeEvent,
+} from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
+import Store from 'electron-store'
 import MenuBuilder from './menu'
-
 import { SaveDataResponse } from './types'
+
+Store.initRenderer()
 
 export default class AppUpdater {
   constructor() {
@@ -159,7 +168,11 @@ app.on('activate', () => {
 
 ipcMain.handle(
   'device-save-data',
-  async (_event, title: string, data: string): Promise<SaveDataResponse> => {
+  async (
+    _event: IpcMainInvokeEvent,
+    title: string,
+    data: string
+  ): Promise<SaveDataResponse> => {
     const homeDir = app.getPath('home')
     const file = await dialog.showSaveDialog({
       title,

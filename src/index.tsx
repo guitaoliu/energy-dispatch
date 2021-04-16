@@ -7,7 +7,7 @@ import App from './App'
 import theme from './theme'
 
 ReactDOM.render(
-  <ChakraProvider theme={theme}>
+  <ChakraProvider resetCSS theme={theme}>
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <App />
   </ChakraProvider>,
