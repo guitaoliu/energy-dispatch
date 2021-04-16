@@ -19,9 +19,9 @@ import faker from 'faker'
 
 import Spotlight from '../components/Spotlight/Spotlight'
 import InfoCard from '../components/InfoCard'
-import { CanStatus } from '../utils/fuelCell'
 
 import useFuelCell from '../hooks/useFuelCell'
+import { CanStatus } from '../utils/eCan'
 
 const logsTemp = [
   {

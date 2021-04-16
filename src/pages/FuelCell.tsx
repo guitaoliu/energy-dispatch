@@ -35,7 +35,7 @@ import FCChart from '../components/FCChart'
 import useFuelCell from '../hooks/useFuelCell'
 
 import timeToString from '../utils/timeToString'
-import { CanStatus } from '../utils/fuelCell'
+import { CanStatus } from '../utils/eCan'
 
 const FuelCell: React.FC = () => {
   // Fuel Cell Data

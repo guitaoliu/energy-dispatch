@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { DataRecord } from '../types/fuelCell'
-import FuelCellController, { CanStatus, DeviceType } from '../utils/fuelCell'
+import FuelCellController from '../utils/fuelCell'
+import { CanStatus, DeviceType } from '../utils/eCan'
 
 export interface FuelCellData {
   outputVolt: DataRecord
