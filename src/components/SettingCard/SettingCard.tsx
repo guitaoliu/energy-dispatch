@@ -9,7 +9,7 @@ import {
 
 export interface SettingCardProps {
   name: string
-  children?: JSX.Element | JSX.Element[]
+  children?: React.ReactNode
 }
 
 const SettingCard = ({ name, children }: SettingCardProps) => {

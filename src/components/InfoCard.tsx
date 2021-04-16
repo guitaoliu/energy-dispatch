@@ -11,8 +11,8 @@ import {
 export interface InfoCardProps {
   name: string
   icon?: React.ElementType
-  topRight?: JSX.Element | JSX.Element[]
-  children: JSX.Element | JSX.Element[]
+  topRight?: React.ReactNode
+  children: React.ReactNode
 }
 
 const InfoCard = ({ name, icon, topRight, children }: InfoCardProps) => {

@@ -3,7 +3,7 @@ import { HStack, Spacer, Text } from '@chakra-ui/react'
 
 export interface SettingItemProps {
   name: string
-  children: JSX.Element | JSX.Element[]
+  children: React.ReactNode
 }
 
 const SettingItem = ({ name, children }: SettingItemProps): JSX.Element => {
