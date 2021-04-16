@@ -1,5 +1,10 @@
 import React from 'react'
-import { Box, useRadio, UseRadioProps } from '@chakra-ui/react'
+import {
+  Box,
+  useColorModeValue,
+  useRadio,
+  UseRadioProps,
+} from '@chakra-ui/react'
 
 export interface RadioCardProps {
   useRadioProps: UseRadioProps
@@ -14,8 +19,19 @@ const RadioCard = ({
   isFirst,
   children,
 }: RadioCardProps): JSX.Element => {
-  const { getInputProps, getCheckboxProps } = useRadio(useRadioProps)
+  const checkedBgColor = useColorModeValue(
+    {
+      bg: 'blue.500',
+      borderColor: 'blue.500',
+    },
+    {
+      bg: 'blue.200',
+      borderColor: 'blue.200',
+    }
+  )
+  const boxBgColor = useColorModeValue('gray.300', 'whiteAlpha.400')
 
+  const { getInputProps, getCheckboxProps } = useRadio(useRadioProps)
   const input = getInputProps()
   const checkbox = getCheckboxProps()
 
@@ -26,12 +42,9 @@ const RadioCard = ({
       <Box
         {...checkbox} // eslint-disable-line react/jsx-props-no-spreading
         cursor="pointer"
-        bg="gray.400"
+        bg={boxBgColor}
         color="white"
-        _checked={{
-          bg: 'blue.400',
-          borderColor: 'blue.400',
-        }}
+        _checked={checkedBgColor}
         px={2}
         py={1}
         borderLeftWidth={isFirst ? '1px' : '0'}

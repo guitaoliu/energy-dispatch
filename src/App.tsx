@@ -12,6 +12,8 @@ import {
   Collapse,
   Spacer,
   useDisclosure,
+  useColorModeValue,
+  Divider,
 } from '@chakra-ui/react'
 
 import { GoDashboard, GoSettings, GoDeviceDesktop } from 'react-icons/go'
@@ -26,13 +28,17 @@ import Setting from './pages/Setting'
 import ACDC from './pages/ADDC'
 
 const App: React.FC = () => {
-  const { isOpen, onToggle, onClose } = useDisclosure()
+  const { isOpen, onToggle } = useDisclosure()
+  const bgColor = useColorModeValue('blue.500', 'whiteAlpha.300')
+  const tabSelectedColor = useColorModeValue(
+    { bg: 'white', color: 'black' },
+    { bg: 'gray.700', color: 'white' }
+  )
   return (
     <Tabs variant="enclosed" isLazy orientation="vertical" h="full">
-      <TabList py={3} bg="blue.400" w="64" shadow="2xl">
+      <TabList py={3} bg={bgColor} w="64">
         <Tab
-          _selected={{ bg: 'white', color: 'black' }}
-          onClick={onClose}
+          _selected={tabSelectedColor}
           color="white"
           my={2}
           justifyContent="flex-start"
@@ -43,7 +49,7 @@ const App: React.FC = () => {
           </Text>
         </Tab>
         <Tab
-          _selected={{ bg: 'white', color: 'black' }}
+          _selected={tabSelectedColor}
           onClick={onToggle}
           color="white"
           my={2}
@@ -63,7 +69,7 @@ const App: React.FC = () => {
         <Collapse in={!isOpen} animateOpacity>
           <Flex direction="column">
             <Tab
-              _selected={{ bg: 'white', color: 'black' }}
+              _selected={tabSelectedColor}
               color="white"
               pl={8}
               justifyContent="flex-start"
@@ -74,7 +80,7 @@ const App: React.FC = () => {
               </Text>
             </Tab>
             <Tab
-              _selected={{ bg: 'white', color: 'black' }}
+              _selected={tabSelectedColor}
               color="white"
               pl={8}
               justifyContent="flex-start"
@@ -87,8 +93,7 @@ const App: React.FC = () => {
           </Flex>{' '}
         </Collapse>
         <Tab
-          _selected={{ bg: 'white', color: 'black' }}
-          onClick={onClose}
+          _selected={tabSelectedColor}
           color="white"
           my={2}
           justifyContent="flex-start"
@@ -99,10 +104,12 @@ const App: React.FC = () => {
           </Text>
         </Tab>
         <Spacer />
+        <Divider />
         <Text
           color="white"
           textAlign="center"
-          mb={4}
+          mt={4}
+          mb={2}
           fontSize="lg"
           fontWeight="semibold"
           letterSpacing="wider"
@@ -110,7 +117,7 @@ const App: React.FC = () => {
           © Xi&#39;an Jiaotong University
         </Text>
       </TabList>
-      <TabPanels h="full" bg="gray.50">
+      <TabPanels h="full">
         <TabPanel h="full">
           <Dashboard />
         </TabPanel>

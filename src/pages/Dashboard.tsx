@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { HStack, Spacer, Text, VStack } from '@chakra-ui/react'
+import {
+  Button,
+  Circle,
+  Divider,
+  HStack,
+  Spacer,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from '@chakra-ui/react'
+import { GoFile, GoInfo } from 'react-icons/go'
 import faker from 'faker'
 
-import Log, { LogRecord } from '../components/Log'
-import Devices from '../components/Devices'
 import Spotlight from '../components/Spotlight/Spotlight'
-
-import useFuelCell from '../hooks/useFuelCell'
+import InfoCard from '../components/InfoCard'
 import { CanStatus } from '../utils/fuelCell'
 
-const logsTemp: LogRecord[] = [
+import useFuelCell from '../hooks/useFuelCell'
+
+const logsTemp = [
   {
     id: '0',
     level: 'info',
@@ -26,7 +40,7 @@ const logsTemp: LogRecord[] = [
 
 const Dashboard: React.FC = () => {
   const { err: FCErr, states: FCStates } = useFuelCell()
-  const [logs, setLogs] = useState<LogRecord[]>(logsTemp)
+  const [logs, setLogs] = useState(logsTemp)
   const [isLogStart, setIsLogStart] = useState<boolean>(false)
 
   const [onlineDevice, setOnlineDevice] = useState<number>(0)
@@ -61,8 +75,6 @@ const Dashboard: React.FC = () => {
     }, 500)
     return () => clearInterval(update)
   }, [FCErr, FCStates])
-
-  useEffect(() => {}, [Devices])
 
   useEffect(() => {
     setOnlineDevice(() =>
@@ -108,13 +120,105 @@ const Dashboard: React.FC = () => {
         outputPower={outputPower}
         consumePower={consumePower}
       />
-      <Devices devices={devices} />
-      <Log
-        logs={logs}
-        isLogStart={isLogStart}
-        setIsLogStart={setIsLogStart}
-        setLogs={setLogs}
-      />
+      <InfoCard name="Devices Overall Information" icon={GoInfo}>
+        <VStack w="full" h={28} maxHeight={32} overflowY="auto">
+          <Table colorScheme="blue" size="sm">
+            <Thead>
+              <Tr zIndex="sticky">
+                <Th position="sticky" top={0}>
+                  Devices
+                </Th>
+                <Th position="sticky" top={0}>
+                  Online Status
+                </Th>
+                <Th position="sticky" top={0} isNumeric>
+                  Output Power
+                </Th>
+                <Th position="sticky" top={0} isNumeric>
+                  Consume Power
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {devices.map((device) => (
+                <Tr key={device.id}>
+                  <Td>{device.name}</Td>
+                  <Td>
+                    {device.online ? (
+                      <HStack>
+                        <Circle size={3} bg="green.400" />
+                        <Text>Online</Text>
+                      </HStack>
+                    ) : (
+                      <HStack>
+                        <Circle size={3} bg="red.400" />
+                        <Text>Offline</Text>
+                      </HStack>
+                    )}
+                  </Td>
+                  <Td isNumeric>{device.outputPower} w</Td>
+                  <Td isNumeric>{device.consumePower} w</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </VStack>
+      </InfoCard>
+      <InfoCard
+        name="Log"
+        icon={GoFile}
+        topRight={
+          <>
+            <Button
+              letterSpacing="wider"
+              size="sm"
+              colorScheme="green"
+              onClick={() => {
+                setLogs([])
+              }}
+            >
+              Clear
+            </Button>
+            {isLogStart ? (
+              <Button
+                size="sm"
+                letterSpacing="wider"
+                colorScheme="red"
+                onClick={() => {
+                  setIsLogStart(false)
+                }}
+              >
+                Stop
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                letterSpacing="wider"
+                colorScheme="blue"
+                onClick={() => {
+                  setIsLogStart(true)
+                }}
+              >
+                Start
+              </Button>
+            )}
+          </>
+        }
+      >
+        <VStack w="100%" h={48} overflowY="auto">
+          {logs.map((log, idx) => (
+            <VStack w="full" key={log.id}>
+              {idx !== 0 && <Divider size="sm" />}
+              <HStack w="98%" key={log.id} fontSize="sm">
+                <Text w={16}>{log.level.toUpperCase()}</Text>
+                <Text>{log.content}</Text>
+                <Spacer />
+                <Text>{new Date(log.time).toLocaleString()}</Text>
+              </HStack>
+            </VStack>
+          ))}
+        </VStack>
+      </InfoCard>
     </VStack>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { VStack, HStack, Text } from '@chakra-ui/react'
+import { VStack, HStack, Text, useColorModeValue } from '@chakra-ui/react'
 
 export interface SpotlightItemProps {
   value: number | string
@@ -12,11 +12,15 @@ const SpotlightItem = ({
   title,
   unit,
 }: SpotlightItemProps): JSX.Element => {
+  const cardColor = useColorModeValue('white', 'whiteAlpha.300')
   return (
     <VStack
       w={56}
       h={32}
-      bg="white"
+      bg={cardColor}
+      border="transparent"
+      borderWidth="1px"
+      borderRadius="md"
       boxShadow="base"
       justifyContent="center"
       alignItems="center"
