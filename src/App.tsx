@@ -19,15 +19,20 @@ import { GiCarBattery } from 'react-icons/gi'
 import { BsFillLightningFill } from 'react-icons/bs'
 
 import TabItem from './components/TabItem'
+
 import FuelCell from './pages/FuelCell'
 import Dashboard from './pages/Dashboard'
 import Devices from './pages/Devices'
 import Setting from './pages/Setting'
 import ACDC from './pages/ADDC'
 
+import useColorSyncSystem from './hooks/useColorSyncSystem'
+
 const App: React.FC = () => {
   const { isOpen, onToggle } = useDisclosure()
   const bgColor = useColorModeValue('blue.500', 'whiteAlpha.300')
+
+  useColorSyncSystem()
   return (
     <Tabs variant="unstyled" isLazy orientation="vertical" h="full">
       <TabList py={3} bg={bgColor} w="64">

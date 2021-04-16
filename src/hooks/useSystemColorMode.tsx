@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import Store from 'electron-store'
+import ElectronStore from 'electron-store'
 import { useColorMode, useMediaQuery } from '@chakra-ui/react'
 
-const store = new Store()
+const store = new ElectronStore()
 const KEY = 'useSystemColorMode'
 
 const useSystemColorMode = () => {
-  const [isDark] = useMediaQuery('(prefers-color-scheme: dark)')
+  const [isSystemDark] = useMediaQuery('(prefers-color-scheme: dark)')
   const [isUseSystemColorMode, setIsUseSystemColorMode] = useState<boolean>(
     store.get(KEY, false) as boolean
   )
@@ -16,9 +16,9 @@ const useSystemColorMode = () => {
   useEffect(() => {
     store.set(KEY, isUseSystemColorMode)
     if (isUseSystemColorMode) {
-      setColorMode(isDark ? 'dark' : 'light')
+      setColorMode(isSystemDark ? 'dark' : 'light')
     }
-  }, [isUseSystemColorMode, setColorMode, isDark])
+  }, [isUseSystemColorMode])
 
   const toggleIsUseSystemColorMode = () => {
     setIsUseSystemColorMode(!isUseSystemColorMode)
