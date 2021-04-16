@@ -1,3 +1,4 @@
+import { ipcRenderer } from 'electron'
 import React, { useEffect } from 'react'
 import {
   Box,
@@ -27,14 +28,12 @@ import { VscDebugStart, VscDebugStop } from 'react-icons/vsc'
 import { MdSave } from 'react-icons/md'
 import { BiLineChart } from 'react-icons/bi'
 import { BsToggleOff, BsToggleOn } from 'react-icons/bs'
-import os from 'os'
 
 import DataTableGrid from '../components/DataTableGrid'
 import FCChart from '../components/FCChart'
 
 import useFuelCell from '../hooks/useFuelCell'
 
-import saveData from '../utils/saveData'
 import timeToString from '../utils/timeToString'
 import { CanStatus } from '../utils/fuelCell'
 
@@ -63,19 +62,26 @@ const FuelCell: React.FC = () => {
     onClose: chartOnClose,
   } = useDisclosure()
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const data = Object.values(fuelCellStates)
-    const homedir = os.homedir()
-    const err = saveData(
-      JSON.stringify(data, null, 2),
+    const resp = await ipcRenderer.invoke(
+      'device-save-data',
       'Fuel Cell Current State',
-      homedir
+      JSON.stringify(data, null, 2)
     )
-    if (err !== null) {
+    if (resp.msg === 'error') {
       toast({
-        title: 'Cannot Save',
-        description: err.message,
+        title: 'Error!',
+        description: 'Cannot save to that path',
         status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } else {
+      toast({
+        title: 'Done!',
+        description: `Success save to ${resp.path}`,
+        status: 'success',
         duration: 3000,
         isClosable: true,
       })

@@ -11,10 +11,13 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import path from 'path'
-import { app, BrowserWindow, shell } from 'electron'
+import fs from 'fs'
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
+
+import { SaveDataResponse } from './types'
 
 export default class AppUpdater {
   constructor() {
@@ -96,7 +99,6 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true,
     },
   })
 
@@ -154,3 +156,34 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow()
 })
+
+ipcMain.handle(
+  'device-save-data',
+  async (_event, title: string, data: string): Promise<SaveDataResponse> => {
+    const homeDir = app.getPath('home')
+    const file = await dialog.showSaveDialog({
+      title,
+      defaultPath: homeDir,
+      buttonLabel: 'Save',
+      filters: [
+        {
+          name: 'JSON file',
+          extensions: ['json', 'text'],
+        },
+      ],
+      properties: [],
+    })
+    const saveFilePath = file.filePath?.toString()
+    if (saveFilePath !== undefined) {
+      await fs.promises.writeFile(saveFilePath.toString(), data)
+      return {
+        path: saveFilePath,
+        msg: 'success',
+      }
+    }
+    return {
+      path: saveFilePath,
+      msg: 'error',
+    }
+  }
+)
