@@ -9,6 +9,7 @@ import {
   Td,
   TableCaption,
   Flex,
+  useColorModeValue,
 } from '@chakra-ui/react'
 
 interface DevicesData {
@@ -28,35 +29,41 @@ const devicesList: DevicesData[] = [
   },
 ]
 
-const Devices: React.FC = () => (
-  <Flex justifyContent="center" alignItems="center" h="100%">
-    <Table
-      variant="simple"
-      maxW="2xl"
-      colorScheme="blue"
-      boxShadow="outline"
-      rounded="md"
-    >
-      <TableCaption fontSize="lg">
-        We support all the above devices, please select the appropriate device
-        in the left panel in Devices section.
-      </TableCaption>
-      <Thead>
-        <Tr>
-          <Th>Device Name</Th>
-          <Th>Description</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {devicesList.map((device) => (
-          <Tr key={device.name}>
-            <Td>{device.name}</Td>
-            <Td>{device.description}</Td>
+const Devices: React.FC = () => {
+  const cardColor = useColorModeValue('white', 'whiteAlpha.300')
+  return (
+    <Flex justifyContent="center" alignItems="center" h="100%">
+      <Table
+        variant="simple"
+        maxW="2xl"
+        colorScheme="blue"
+        bgColor={cardColor}
+        border="transparent"
+        borderWidth="1px"
+        borderRadius="md"
+        boxShadow="base"
+      >
+        <TableCaption fontSize="lg">
+          We support all the above devices, please select the appropriate device
+          in the left panel in Devices section.
+        </TableCaption>
+        <Thead>
+          <Tr>
+            <Th>Device Name</Th>
+            <Th>Description</Th>
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
-  </Flex>
-)
+        </Thead>
+        <Tbody>
+          {devicesList.map((device) => (
+            <Tr key={device.name}>
+              <Td>{device.name}</Td>
+              <Td>{device.description}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Flex>
+  )
+}
 
 export default Devices
