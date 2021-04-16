@@ -1,36 +1,65 @@
 import React, { useState } from 'react'
 import {
-  VStack,
-  HStack,
-  Text,
   Button,
-  Spacer,
   Divider,
+  HStack,
+  Icon,
   Input,
   InputGroup,
   InputRightAddon,
   Select,
+  Spacer,
   Switch,
-  Icon,
+  Text,
   useColorMode,
+  useToast,
+  VStack,
 } from '@chakra-ui/react'
 import { AiOutlineArrowRight } from 'react-icons/ai'
+import ElectronStore from 'electron-store'
 
 import RadioGroup from '../components/RadioGroup/RadioGroup'
 import { SettingCard, SettingItem } from '../components/SettingCard'
 import useSystemColorMode from '../hooks/useSystemColorMode'
+import useUsbCan from '../hooks/useUsbCan'
+import { DeviceType } from '../utils/eCan'
 
 const LogLevelOptions = ['debug', 'info', 'warning', 'error']
+const store = new ElectronStore()
 
 const Setting: React.FC = () => {
+  const toast = useToast()
   const [logLevel, setLogLevel] = useState<string>('info')
-  const [fetchingInterval, setFetchingInterval] = useState<number>(100)
+  const {
+    deviceType,
+    deviceIndex,
+    baudRate,
+    fetchingInterval,
+    setDeviceType,
+    setDeviceIndex,
+    setBaudRate,
+    setFetchingInterval,
+  } = useUsbCan()
   const {
     isUseSystemColorMode,
     toggleIsUseSystemColorMode,
   } = useSystemColorMode()
 
-  const { colorMode, toggleColorMode } = useColorMode()
+  const { colorMode, toggleColorMode, setColorMode } = useColorMode()
+
+  const handleResetAllSettings = () => {
+    // todo fix reload
+    store.clear()
+    setColorMode('light')
+    toast({
+      title: 'Reset!',
+      description: 'Successfully reset all settings, please reload this page',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
+  }
+
   return (
     <VStack py={3} h="full">
       <HStack w="90%">
@@ -38,7 +67,11 @@ const Setting: React.FC = () => {
           Settings
         </Text>
         <Spacer />
-        <Button colorScheme="red" variant="outline">
+        <Button
+          colorScheme="red"
+          variant="outline"
+          onClick={handleResetAllSettings}
+        >
           Reset All Settings
         </Button>
       </HStack>
@@ -106,21 +139,34 @@ const Setting: React.FC = () => {
         <SettingCard name="USB CAN">
           <SettingItem name="Device Type">
             <RadioGroup
-              options={['USB CAN I', 'USB CAN II']}
-              defaultValue="USB CAN I"
+              options={[
+                DeviceType[DeviceType.USBCANI],
+                DeviceType[DeviceType.USBCANII],
+              ]}
+              defaultValue={DeviceType[deviceType]}
+              onChange={(value) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                setDeviceType(Number(DeviceType[value as any]))
+              }}
             />
           </SettingItem>
           <SettingItem name="Device Index">
-            <RadioGroup options={['0', '1']} defaultValue="0" />
+            <RadioGroup
+              options={['0', '1']}
+              defaultValue={deviceIndex.toString()}
+              onChange={(value) => {
+                setDeviceIndex(Number(value))
+              }}
+            />
           </SettingItem>
           <SettingItem name="Baud Rate">
             <Select
               size="sm"
               w="56"
               onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-                console.log(event.target.value)
+                setBaudRate(Number(event.target.value))
               }}
-              defaultValue="500"
+              defaultValue={baudRate}
             >
               <option value="5">5 kBit/s</option>
               <option value="10">10 kBit/s</option>
@@ -142,8 +188,7 @@ const Setting: React.FC = () => {
           <SettingItem name="Fetching Interval">
             <InputGroup size="sm" w={56}>
               <Input
-                // todo set to default value
-                placeholder="100"
+                placeholder={fetchingInterval.toString()}
                 textAlign="center"
                 type="number"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
