@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Button,
   Divider,
@@ -16,20 +16,24 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { AiOutlineArrowRight } from 'react-icons/ai'
+import { ipcRenderer } from 'electron'
 import ElectronStore from 'electron-store'
+import { LogLevel } from 'electron-log'
 
 import RadioGroup from '../components/RadioGroup/RadioGroup'
 import { SettingCard, SettingItem } from '../components/SettingCard'
+
 import useSystemColorMode from '../hooks/useSystemColorMode'
 import useUsbCan from '../hooks/useUsbCan'
+import useLogLevel from '../hooks/useLogLevel'
 import { DeviceType } from '../utils/eCan'
+import log from '../log'
 
-const LogLevelOptions = ['debug', 'info', 'warning', 'error']
 const store = new ElectronStore()
 
 const Setting: React.FC = () => {
   const toast = useToast()
-  const [logLevel, setLogLevel] = useState<string>('info')
+  const { logLevel, setLogLevel, logLevelOptions } = useLogLevel()
   const {
     deviceType,
     deviceIndex,
@@ -50,6 +54,7 @@ const Setting: React.FC = () => {
   const handleResetAllSettings = () => {
     // todo fix reload
     store.clear()
+    log.info('Reset all settings')
     setColorMode('light')
     toast({
       title: 'Reset!',
@@ -76,13 +81,13 @@ const Setting: React.FC = () => {
         </Button>
       </HStack>
       <Divider w="90%" />
-      <VStack w="90%" overflowY="auto" px={1} pb={2}>
+      <VStack w="90%" overflowY="auto" overflowX="hidden" px={1} pb={2}>
         <SettingCard name="General">
           <SettingItem name="Log Level">
             <RadioGroup
-              options={LogLevelOptions}
+              options={logLevelOptions}
               defaultValue={logLevel}
-              onChange={setLogLevel}
+              onChange={(value) => setLogLevel(value as LogLevel)}
             />
           </SettingItem>
           <SettingItem name="Notifications">
@@ -94,6 +99,7 @@ const Setting: React.FC = () => {
               size="sm"
               variant="ghost"
               rightIcon={<Icon as={AiOutlineArrowRight} />}
+              onClick={() => ipcRenderer.invoke('open-log-folder')}
             >
               Open
             </Button>

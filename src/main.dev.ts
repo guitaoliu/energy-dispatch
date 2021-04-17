@@ -21,7 +21,7 @@ import {
   IpcMainInvokeEvent,
 } from 'electron'
 import { autoUpdater } from 'electron-updater'
-import log from 'electron-log'
+import log, { LogLevel } from 'electron-log'
 import Store from 'electron-store'
 import MenuBuilder from './menu'
 import { SaveDataResponse } from './types'
@@ -169,10 +169,11 @@ app.on('activate', () => {
 ipcMain.handle(
   'device-save-data',
   async (
-    _event: IpcMainInvokeEvent,
+    event: IpcMainInvokeEvent,
     title: string,
     data: string
   ): Promise<SaveDataResponse> => {
+    log.debug(`device-save-data was called at ${event.frameId}`)
     const homeDir = app.getPath('home')
     const file = await dialog.showSaveDialog({
       title,
@@ -189,6 +190,7 @@ ipcMain.handle(
     const saveFilePath = file.filePath?.toString()
     if (saveFilePath !== undefined) {
       await fs.promises.writeFile(saveFilePath.toString(), data)
+      log.info(`Save file to ${saveFilePath}`)
       return {
         path: saveFilePath,
         msg: 'success',
@@ -200,3 +202,16 @@ ipcMain.handle(
     }
   }
 )
+
+ipcMain.handle('open-log-folder', async () => {
+  const logFolder = app.getPath('logs')
+  log.info('Open log folder')
+  const err = await shell.openPath(logFolder)
+  if (err !== '') {
+    log.error('Can not open log folder')
+  }
+})
+
+ipcMain.handle('log', (_event, level: LogLevel, text) => {
+  log[level](text)
+})
