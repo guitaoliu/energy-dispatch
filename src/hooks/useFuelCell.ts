@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { DataRecord } from '../types/fuelCell'
-import FuelCellController from '../utils/fuelCell'
 import { CanStatus, DeviceType } from '../utils/eCan'
+import FCController from '../utils/fuelCell'
 
 export interface FuelCellData {
   outputVolt: DataRecord
@@ -267,11 +267,6 @@ const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
 
   // Error
   const [err, setErr] = useState<CanStatus>(CanStatus.OK)
-
-  const FCController = useMemo(
-    () => new FuelCellController(DeviceType.USBCANII),
-    []
-  )
 
   const updateState = () => {
     FCController.update()

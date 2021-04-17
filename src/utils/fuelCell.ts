@@ -8,7 +8,7 @@ import ECANVic, {
   getTimingFromBaudRate,
 } from './eCan'
 
-export default class FuelCellController {
+class FuelCellController {
   deviceType: DeviceType
 
   devIndex: number
@@ -247,3 +247,5 @@ export default class FuelCellController {
     return CanStatus.OK
   }
 }
+
+export default new FuelCellController()
