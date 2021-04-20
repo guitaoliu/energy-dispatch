@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import ElectronStore from 'electron-store'
 
 import { LogLevel } from 'electron-log'
 import log from '../log'
-
-const store = new ElectronStore()
+import { LOG_LEVEL } from '../constant'
+import store from '../store'
 
 const useLogLevel = () => {
   const logLevelOptions: LogLevel[] = useMemo(
@@ -12,11 +11,11 @@ const useLogLevel = () => {
     []
   )
   const [logLevel, setLogLevel] = useState<LogLevel>(
-    store.get('logLevel', 'info') as LogLevel
+    store.get(LOG_LEVEL, 'info') as LogLevel
   )
 
   useEffect(() => {
-    store.set('logLevel', logLevel)
+    store.set(LOG_LEVEL, logLevel)
     log.info(`Log Level was change to ${logLevel}`)
   }, [logLevel])
 

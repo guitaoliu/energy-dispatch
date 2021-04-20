@@ -37,10 +37,12 @@ const Setting: React.FC = () => {
   const {
     deviceType,
     deviceIndex,
+    canIndex,
     baudRate,
     fetchingInterval,
     setDeviceType,
     setDeviceIndex,
+    setCanIndex,
     setBaudRate,
     setFetchingInterval,
   } = useUsbCan()
@@ -162,6 +164,15 @@ const Setting: React.FC = () => {
               defaultValue={deviceIndex.toString()}
               onChange={(value) => {
                 setDeviceIndex(Number(value))
+              }}
+            />
+          </SettingItem>
+          <SettingItem name="CAN Index">
+            <RadioGroup
+              options={['0', '1']}
+              defaultValue={canIndex.toString()}
+              onChange={(value) => {
+                setCanIndex(Number(value))
               }}
             />
           </SettingItem>
