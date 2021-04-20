@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
+import FuelCellController from '../utils/fuelCell'
 import { DataRecord } from '../types/fuelCell'
 import { CanStatus, DeviceType } from '../utils/eCan'
-import FCController from '../utils/fuelCell'
+import useUsbCan from './useUsbCan'
 
 export interface FuelCellData {
   outputVolt: DataRecord
@@ -38,16 +39,16 @@ export interface FuelCellData {
 export interface FuelCellStatue {
   states: FuelCellData
   err: CanStatus
+  deviceType: DeviceType
+  deviceIndex: number
+  canIndex: number
   baudRate: number
-  setBaudRate: React.Dispatch<React.SetStateAction<number>>
   isUpdating: boolean
   setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>
   isWork: boolean
   setIsWork: React.Dispatch<React.SetStateAction<boolean>>
   power: number
   setPower: React.Dispatch<React.SetStateAction<number>>
-  deviceType: DeviceType
-  setDeviceType: React.Dispatch<React.SetStateAction<DeviceType>>
 }
 
 const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
@@ -259,11 +260,15 @@ const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
   })
 
   // Setting control
+  const { deviceType, deviceIndex, canIndex, baudRate } = useUsbCan()
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const [isWork, setIsWork] = useState<boolean>(false)
-  const [baudRate, setBaudRate] = useState<number>(500000)
   const [power, setPower] = useState<number>(500)
-  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.USBCANII)
+
+  const FCController = useMemo(
+    () => new FuelCellController(deviceType, deviceIndex, canIndex),
+    [deviceIndex, deviceType, canIndex]
+  )
 
   // Error
   const [err, setErr] = useState<CanStatus>(CanStatus.OK)
@@ -453,16 +458,16 @@ const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
       second,
     },
     err,
+    deviceType,
+    deviceIndex,
+    canIndex,
     baudRate,
-    setBaudRate,
     isUpdating,
     setIsUpdating,
     isWork,
     setIsWork,
     power,
     setPower,
-    deviceType,
-    setDeviceType,
   }
 }
 

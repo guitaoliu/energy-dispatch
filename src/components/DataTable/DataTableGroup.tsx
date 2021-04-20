@@ -3,13 +3,13 @@ import React from 'react'
 import { Grid, GridItem } from '@chakra-ui/react'
 
 import DataTable from './DataTable'
-import { DataRecord } from '../types/fuelCell'
+import { DataRecord } from '../../types/fuelCell'
 
 export interface DataTableGridProps {
   tablesData: DataRecord[]
 }
 
-const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
+const DataTableGroup = ({ tablesData }: DataTableGridProps): JSX.Element => {
   const output = {
     name: 'Output and Load',
     data: tablesData
@@ -69,4 +69,4 @@ const DataTableGrid = ({ tablesData }: DataTableGridProps): JSX.Element => {
   )
 }
 
-export default DataTableGrid
+export default DataTableGroup

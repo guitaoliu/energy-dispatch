@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Table, Thead, Tbody, TableCaption, Tr, Th, Td } from '@chakra-ui/react'
 
-import { DataRecord } from '../types/fuelCell'
+import { DataRecord } from '../../types/fuelCell'
 
 export interface DataTableProps {
   name: string
@@ -25,7 +25,7 @@ const DataTable = ({ name, data }: DataTableProps): JSX.Element => (
           <Td isNumeric>
             {d.unit === undefined
               ? d.value.toFixed(0)
-              : `${d.value.toFixed(3)} ${d?.unit}`}
+              : `${d.value.toFixed(d.value === 0 ? 0 : 3)} ${d?.unit}`}
           </Td>
         </Tr>
       ))}

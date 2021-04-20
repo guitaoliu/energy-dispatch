@@ -248,4 +248,4 @@ class FuelCellController {
   }
 }
 
-export default new FuelCellController()
+export default FuelCellController
