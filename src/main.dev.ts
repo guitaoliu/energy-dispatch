@@ -169,11 +169,10 @@ app.on('activate', () => {
 ipcMain.handle(
   'device-save-data',
   async (
-    event: IpcMainInvokeEvent,
+    _event: IpcMainInvokeEvent,
     title: string,
     data: string
-  ): Promise<SaveDataResponse> => {
-    log.debug(`device-save-data was called at ${event.frameId}`)
+  ): Promise<SaveDataResponse | undefined> => {
     const homeDir = app.getPath('home')
     const file = await dialog.showSaveDialog({
       title,
@@ -187,18 +186,19 @@ ipcMain.handle(
       ],
       properties: [],
     })
-    const saveFilePath = file.filePath?.toString()
-    if (saveFilePath !== undefined) {
-      await fs.promises.writeFile(saveFilePath.toString(), data)
-      log.info(`Save file to ${saveFilePath}`)
+    const filePath = file.filePath ?? ''
+    try {
+      await fs.promises.writeFile(filePath, data)
+      log.info(`Save file to ${path}`)
       return {
-        path: saveFilePath,
+        path: filePath,
         msg: 'success',
       }
-    }
-    return {
-      path: saveFilePath,
-      msg: 'error',
+    } catch (e) {
+      return {
+        path: filePath,
+        msg: 'error',
+      }
     }
   }
 )
