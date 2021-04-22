@@ -7,6 +7,7 @@ import ECANVic, {
   DeviceType,
   getTimingFromBaudRate,
 } from './eCan'
+import { Log } from '../log'
 
 class FuelCellController {
   deviceType: DeviceType
@@ -14,6 +15,8 @@ class FuelCellController {
   devIndex: number
 
   canIndex: number
+
+  log: Log
 
   outputVolt = 0
 
@@ -75,10 +78,32 @@ class FuelCellController {
 
   isStart = false
 
-  constructor(deviceType = DeviceType.USBCANII, devIndex = 0, canIndex = 0) {
+  constructor(
+    deviceType = DeviceType.USBCANII,
+    devIndex = 0,
+    canIndex = 0,
+    log: Log
+  ) {
     this.deviceType = deviceType
     this.devIndex = devIndex
     this.canIndex = canIndex
+    this.log = log
+  }
+
+  initialize(baudRate: number): CanStatus {
+    const openStatus = this.open()
+    if (openStatus !== CanStatus.OK) {
+      this.log.error('Can not connect to USB CAN')
+    }
+    const initStatus = this.init(baudRate)
+    if (initStatus !== CanStatus.OK) {
+      this.log.error('Can not initialize USB CAN')
+    }
+    const startStatus = this.start()
+    if (startStatus !== CanStatus.OK) {
+      this.log.error('Can not start USB CAN')
+    }
+    return openStatus && initStatus && startStatus
   }
 
   changeStatus(power: number, isStart: boolean) {
@@ -95,6 +120,7 @@ class FuelCellController {
       0,
     ]
     this.transmit(0x104, data)
+    this.log.info(`Change fuel cell with demand ${power}`)
   }
 
   open(): CanStatus {

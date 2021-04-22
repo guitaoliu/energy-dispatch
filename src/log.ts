@@ -7,6 +7,13 @@ const log = (level: LogLevel) => (text: string) => {
   ipcRenderer.invoke(LOG, level, text)
 }
 
+export interface Log {
+  info: (text: string) => void
+  debug: (text: string) => void
+  error: (text: string) => void
+  warn: (text: string) => void
+}
+
 export default {
   info: log('info'),
   debug: log('debug'),

@@ -4,6 +4,7 @@ import FuelCellController from '../lib/fuelCell'
 import { DataRecord } from '../types/fuelCell'
 import { CanStatus, DeviceType } from '../lib/eCan'
 import useUsbCan from './useUsbCan'
+import log from '../log'
 
 export interface FuelCellData {
   outputVolt: DataRecord
@@ -272,7 +273,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [power, setPower] = useState<number>(500)
 
   const FCController = useMemo(
-    () => new FuelCellController(deviceType, deviceIndex, canIndex),
+    () => new FuelCellController(deviceType, deviceIndex, canIndex, log),
     [deviceIndex, deviceType, canIndex]
   )
 
@@ -397,9 +398,7 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
 
   // Initialize CAN bus while rendering the page
   useEffect(() => {
-    const errStart =
-      FCController.open() && FCController.init(baudRate) && FCController.start()
-    setErr(errStart)
+    setErr(FCController.initialize(baudRate))
     return () => {
       FCController.close()
     }
