@@ -32,7 +32,7 @@ import { READ_LATEST_LOGS } from '../constant'
 
 const Dashboard: React.FC = () => {
   const { err: FCErr, states: FCStates } = useFuelCell()
-  const [logs, setLogs] = useState<Log[] | null>(null)
+  const [logs, setLogs] = useState<Log[]>([])
   const [logCount, setLogCount] = useState<number>(10)
 
   const [onlineDevice, setOnlineDevice] = useState<number>(0)
@@ -86,6 +86,10 @@ const Dashboard: React.FC = () => {
   }
 
   const handleReadLogNumsChange = (value: number) => setLogCount(value)
+
+  useEffect(() => {
+    handleReadLog()
+  }, [])
 
   return (
     <VStack my={3} spacing={4} h="full">
@@ -177,19 +181,28 @@ const Dashboard: React.FC = () => {
         }
       >
         <VStack w="100%" h={48} overflowY="auto">
-          {logs === null
-            ? ''
-            : logs.map((log, idx) => (
-                <VStack w="full" key={log.id}>
-                  {idx !== 0 && <Divider size="sm" />}
-                  <HStack w="98%" key={log.id} fontSize="sm">
-                    <Text w={16}>{log.level.toUpperCase()}</Text>
-                    <Text>{log.content}</Text>
-                    <Spacer />
-                    <Text>{new Date(log.time).toLocaleString()}</Text>
-                  </HStack>
-                </VStack>
-              ))}
+          {logs.length === 0 ? (
+            <VStack
+              w="100%"
+              h="100%"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text>There is no log currently.</Text>
+            </VStack>
+          ) : (
+            logs.map((log, idx) => (
+              <VStack w="full" key={log.id}>
+                {idx !== 0 && <Divider size="sm" />}
+                <HStack w="98%" key={log.id} fontSize="sm">
+                  <Text w={16}>{log.level.toUpperCase()}</Text>
+                  <Text>{log.content}</Text>
+                  <Spacer />
+                  <Text>{new Date(log.time).toLocaleString()}</Text>
+                </HStack>
+              </VStack>
+            ))
+          )}
         </VStack>
       </InfoCard>
     </VStack>

@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import log from '../log'
 
 import FuelCellController from '../lib/fuelCell'
-import { DataRecord } from '../types/fuelCell'
+import { DataRecord } from '../types'
 import { CanStatus, DeviceType } from '../lib/eCan'
 import useUsbCan from './useUsbCan'
-import log from '../log'
 
 export interface FuelCellData {
   outputVolt: DataRecord
@@ -407,6 +407,12 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   // Listen to demand power and start state change
   useEffect(() => {
     FCController.changeStatus(power, isWork)
+    if (err === CanStatus.OK) {
+      log.info(`Fuel Cell is ${isWork ? 'opened' : 'closed'}`)
+      if (isWork) {
+        log.info(`Change fuel cell with demand ${power}`)
+      }
+    }
   }, [isWork])
 
   // Set interval for update states

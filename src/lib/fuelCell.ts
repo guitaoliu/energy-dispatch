@@ -120,7 +120,6 @@ class FuelCellController {
       0,
     ]
     this.transmit(0x104, data)
-    this.log.info(`Change fuel cell with demand ${power}`)
   }
 
   open(): CanStatus {
