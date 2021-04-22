@@ -4,6 +4,11 @@ import {
   Circle,
   Divider,
   HStack,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Spacer,
   Table,
   Tbody,
@@ -15,33 +20,20 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { GoFile, GoInfo } from 'react-icons/go'
-import faker from 'faker'
+import { ipcRenderer } from 'electron'
 
 import Spotlight from '../components/Spotlight/Spotlight'
 import InfoCard from '../components/InfoCard'
 
 import useFuelCell from '../hooks/useFuelCell'
 import { CanStatus } from '../lib/eCan'
-
-const logsTemp = [
-  {
-    id: '0',
-    level: 'info',
-    content: 'Device Fuel Cell is online',
-    time: new Date().getTime(),
-  },
-  {
-    id: '1',
-    level: 'debug',
-    content: 'Device AC/DC is offline',
-    time: new Date().getTime(),
-  },
-]
+import { Log } from '../types'
+import { READ_LATEST_LOGS } from '../constant'
 
 const Dashboard: React.FC = () => {
   const { err: FCErr, states: FCStates } = useFuelCell()
-  const [logs, setLogs] = useState(logsTemp)
-  const [isLogStart, setIsLogStart] = useState<boolean>(false)
+  const [logs, setLogs] = useState<Log[] | null>(null)
+  const [logCount, setLogCount] = useState<number>(10)
 
   const [onlineDevice, setOnlineDevice] = useState<number>(0)
   const [outputPower, setOutputPower] = useState<number>(0)
@@ -88,24 +80,12 @@ const Dashboard: React.FC = () => {
     )
   }, [devices])
 
-  useEffect(() => {
-    const generateLogs = setInterval(() => {
-      if (isLogStart) {
-        setLogs((prevState) => [
-          ...prevState,
-          {
-            id: faker.datatype.uuid(),
-            level: Math.random() < 0.8 ? 'info' : 'debug',
-            content: faker.lorem.sentence(),
-            time: faker.time.recent(),
-          },
-        ])
-      }
-    }, 500)
-    return () => {
-      clearInterval(generateLogs)
-    }
-  }, [isLogStart])
+  const handleReadLog = async () => {
+    const lastLogs = await ipcRenderer.invoke(READ_LATEST_LOGS, logCount)
+    setLogs(lastLogs)
+  }
+
+  const handleReadLogNumsChange = (value: number) => setLogCount(value)
 
   return (
     <VStack my={3} spacing={4} h="full">
@@ -169,54 +149,47 @@ const Dashboard: React.FC = () => {
         icon={GoFile}
         topRight={
           <>
+            <Text>Read lines:</Text>
+            <NumberInput
+              defaultValue={logCount}
+              min={0}
+              w={24}
+              size="sm"
+              onChange={(_value: string, value: number) =>
+                handleReadLogNumsChange(value)
+              }
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
             <Button
               letterSpacing="wider"
               size="sm"
               colorScheme="green"
-              onClick={() => {
-                setLogs([])
-              }}
+              onClick={handleReadLog}
             >
-              Clear
+              Read
             </Button>
-            {isLogStart ? (
-              <Button
-                size="sm"
-                letterSpacing="wider"
-                colorScheme="red"
-                onClick={() => {
-                  setIsLogStart(false)
-                }}
-              >
-                Stop
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                letterSpacing="wider"
-                colorScheme="blue"
-                onClick={() => {
-                  setIsLogStart(true)
-                }}
-              >
-                Start
-              </Button>
-            )}
           </>
         }
       >
         <VStack w="100%" h={48} overflowY="auto">
-          {logs.map((log, idx) => (
-            <VStack w="full" key={log.id}>
-              {idx !== 0 && <Divider size="sm" />}
-              <HStack w="98%" key={log.id} fontSize="sm">
-                <Text w={16}>{log.level.toUpperCase()}</Text>
-                <Text>{log.content}</Text>
-                <Spacer />
-                <Text>{new Date(log.time).toLocaleString()}</Text>
-              </HStack>
-            </VStack>
-          ))}
+          {logs === null
+            ? ''
+            : logs.map((log, idx) => (
+                <VStack w="full" key={log.id}>
+                  {idx !== 0 && <Divider size="sm" />}
+                  <HStack w="98%" key={log.id} fontSize="sm">
+                    <Text w={16}>{log.level.toUpperCase()}</Text>
+                    <Text>{log.content}</Text>
+                    <Spacer />
+                    <Text>{new Date(log.time).toLocaleString()}</Text>
+                  </HStack>
+                </VStack>
+              ))}
         </VStack>
       </InfoCard>
     </VStack>

@@ -3,10 +3,17 @@ import { LogLevel } from 'electron-log'
 
 import { LOG } from './constant'
 
+/**
+ * write log with ipcRenderer
+ * @param level log level
+ */
 const log = (level: LogLevel) => (text: string) => {
   ipcRenderer.invoke(LOG, level, text)
 }
 
+/**
+ * Log precess interface
+ */
 export interface Log {
   info: (text: string) => void
   debug: (text: string) => void
@@ -14,6 +21,9 @@ export interface Log {
   warn: (text: string) => void
 }
 
+/**
+ * functions for different log level
+ */
 export default {
   info: log('info'),
   debug: log('debug'),
