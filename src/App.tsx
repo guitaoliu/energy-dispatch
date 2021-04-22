@@ -44,7 +44,12 @@ const App: React.FC = () => {
           toggleOpen={onToggle}
         />
         <Collapse in={!isOpen} animateOpacity>
-          <VStack alignItems="flex-start" w="full">
+          <VStack
+            justifyContent="center"
+            alignItems="flex-start"
+            w="full"
+            py={1}
+          >
             <TabItem leftIcon={GiCarBattery} text="Fuel Cell" isSub />
             <TabItem leftIcon={BsFillLightningFill} text="AC/DC" isSub />
           </VStack>

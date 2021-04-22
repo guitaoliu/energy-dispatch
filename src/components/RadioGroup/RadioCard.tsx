@@ -25,8 +25,8 @@ const RadioCard = ({
       borderColor: 'blue.500',
     },
     {
-      bg: 'blue.200',
-      borderColor: 'blue.200',
+      bg: 'blue.300',
+      borderColor: 'blue.300',
     }
   )
   const boxBgColor = useColorModeValue('gray.300', 'whiteAlpha.400')
