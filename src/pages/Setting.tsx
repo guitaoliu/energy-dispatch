@@ -26,7 +26,7 @@ import { SettingCard, SettingItem } from '../components/SettingCard'
 import useSystemColorMode from '../hooks/useSystemColorMode'
 import useUsbCan from '../hooks/useUsbCan'
 import useLogLevel from '../hooks/useLogLevel'
-import { DeviceType } from '../utils/eCan'
+import { DeviceType } from '../lib/eCan'
 import log from '../log'
 
 const store = new ElectronStore()
@@ -105,20 +105,6 @@ const Setting: React.FC = () => {
             >
               Open
             </Button>
-          </SettingItem>
-          <SettingItem name="Data Updating Interval">
-            <InputGroup size="sm" w={56}>
-              <Input
-                // todo set to default value
-                placeholder="500"
-                textAlign="center"
-                type="number"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setFetchingInterval(Number(event.target.value))
-                }}
-              />
-              <InputRightAddon>ms</InputRightAddon>
-            </InputGroup>
           </SettingItem>
         </SettingCard>
         <SettingCard name="Appearance">

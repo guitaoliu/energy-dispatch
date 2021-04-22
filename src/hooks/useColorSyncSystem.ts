@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useColorMode, useMediaQuery } from '@chakra-ui/react'
 
-import store from '../store'
+import store from '../utils/store'
 import { IS_USE_SYSTEM_COLOR_MODE } from '../constant'
 
 const useColorSyncSystem = () => {

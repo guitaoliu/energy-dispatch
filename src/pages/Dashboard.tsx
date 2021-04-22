@@ -21,7 +21,7 @@ import Spotlight from '../components/Spotlight/Spotlight'
 import InfoCard from '../components/InfoCard'
 
 import useFuelCell from '../hooks/useFuelCell'
-import { CanStatus } from '../utils/eCan'
+import { CanStatus } from '../lib/eCan'
 
 const logsTemp = [
   {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import store from '../store'
+import store from '../utils/store'
 import log from '../log'
 
 const useStore = <T>(key: string, defaultValue: T) => {

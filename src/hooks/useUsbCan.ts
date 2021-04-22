@@ -1,6 +1,6 @@
 import useStore from './useStore'
 
-import { DeviceType } from '../utils/eCan'
+import { DeviceType } from '../lib/eCan'
 import {
   DEVICE_TYPE,
   DEVICE_INDEX,

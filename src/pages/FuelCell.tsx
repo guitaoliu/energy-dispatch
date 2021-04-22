@@ -41,7 +41,7 @@ import FCChart from '../components/FCChart'
 
 import useFuelCell from '../hooks/useFuelCell'
 import timeToString from '../utils/timeToString'
-import { CanStatus, DeviceType } from '../utils/eCan'
+import { CanStatus, DeviceType } from '../lib/eCan'
 
 const FuelCell: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()

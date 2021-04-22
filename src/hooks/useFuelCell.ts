@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
-import FuelCellController from '../utils/fuelCell'
+import FuelCellController from '../lib/fuelCell'
 import { DataRecord } from '../types/fuelCell'
-import { CanStatus, DeviceType } from '../utils/eCan'
+import { CanStatus, DeviceType } from '../lib/eCan'
 import useUsbCan from './useUsbCan'
 
 export interface FuelCellData {
