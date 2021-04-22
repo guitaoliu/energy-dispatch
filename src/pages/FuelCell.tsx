@@ -42,6 +42,7 @@ import FCChart from '../components/FCChart'
 import useFuelCell from '../hooks/useFuelCell'
 import timeToString from '../utils/timeToString'
 import { CanStatus, DeviceType } from '../lib/eCan'
+import { SAVE_DATA } from '../constant'
 
 const FuelCell: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -73,7 +74,7 @@ const FuelCell: React.FC = () => {
   const handleSave = async () => {
     const data = Object.values(fuelCellStates)
     const resp = await ipcRenderer.invoke(
-      'device-save-data',
+      SAVE_DATA,
       'Fuel Cell Current State',
       JSON.stringify(data, null, 2)
     )

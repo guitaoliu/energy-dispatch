@@ -11,20 +11,12 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import path from 'path'
-import fs from 'fs'
-import {
-  app,
-  BrowserWindow,
-  shell,
-  ipcMain,
-  dialog,
-  IpcMainInvokeEvent,
-} from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 import { autoUpdater } from 'electron-updater'
-import log, { LogLevel } from 'electron-log'
+import log from 'electron-log'
 import Store from 'electron-store'
 import MenuBuilder from './app/menu'
-import { SaveDataResponse } from './types'
+import ipcRegister from './app/ipcRegister'
 
 Store.initRenderer()
 
@@ -158,60 +150,10 @@ app.on('window-all-closed', () => {
   }
 })
 
-app.whenReady().then(createWindow).catch(console.log)
+app.whenReady().then(createWindow).then(ipcRegister).catch(console.log)
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow()
-})
-
-ipcMain.handle(
-  'device-save-data',
-  async (
-    _event: IpcMainInvokeEvent,
-    title: string,
-    data: string
-  ): Promise<SaveDataResponse | undefined> => {
-    const homeDir = app.getPath('home')
-    const file = await dialog.showSaveDialog({
-      title,
-      defaultPath: homeDir,
-      buttonLabel: 'Save',
-      filters: [
-        {
-          name: 'JSON file',
-          extensions: ['json', 'text'],
-        },
-      ],
-      properties: [],
-    })
-    const filePath = file.filePath ?? ''
-    try {
-      await fs.promises.writeFile(filePath, data)
-      log.info(`Save file to ${path}`)
-      return {
-        path: filePath,
-        msg: 'success',
-      }
-    } catch (e) {
-      return {
-        path: filePath,
-        msg: 'error',
-      }
-    }
-  }
-)
-
-ipcMain.handle('open-log-folder', async () => {
-  const logFolder = app.getPath('logs')
-  log.info('Open log folder')
-  const err = await shell.openPath(logFolder)
-  if (err !== '') {
-    log.error('Can not open log folder')
-  }
-})
-
-ipcMain.handle('log', (_event, level: LogLevel, text) => {
-  log[level](text)
 })

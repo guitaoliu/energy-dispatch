@@ -1,8 +1,10 @@
 import { ipcRenderer } from 'electron'
 import { LogLevel } from 'electron-log'
 
+import { LOG } from './constant'
+
 const log = (level: LogLevel) => (text: string) => {
-  ipcRenderer.invoke('log', level, text)
+  ipcRenderer.invoke(LOG, level, text)
 }
 
 export default {

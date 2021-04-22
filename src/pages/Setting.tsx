@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react'
 import { AiOutlineArrowRight } from 'react-icons/ai'
 import { ipcRenderer } from 'electron'
-import ElectronStore from 'electron-store'
 import { LogLevel } from 'electron-log'
 
 import RadioGroup from '../components/RadioGroup/RadioGroup'
@@ -26,10 +25,11 @@ import { SettingCard, SettingItem } from '../components/SettingCard'
 import useSystemColorMode from '../hooks/useSystemColorMode'
 import useUsbCan from '../hooks/useUsbCan'
 import useLogLevel from '../hooks/useLogLevel'
-import { DeviceType } from '../lib/eCan'
-import log from '../log'
 
-const store = new ElectronStore()
+import store from '../utils/store'
+import log from '../log'
+import { DeviceType } from '../lib/eCan'
+import { OPEN_LOG_FOLDER } from '../constant'
 
 const Setting: React.FC = () => {
   const toast = useToast()
@@ -101,7 +101,7 @@ const Setting: React.FC = () => {
               size="sm"
               variant="ghost"
               rightIcon={<Icon as={AiOutlineArrowRight} />}
-              onClick={() => ipcRenderer.invoke('open-log-folder')}
+              onClick={() => ipcRenderer.invoke(OPEN_LOG_FOLDER)}
             >
               Open
             </Button>
