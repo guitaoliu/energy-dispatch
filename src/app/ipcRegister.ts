@@ -51,7 +51,8 @@ const handleSaveDate = async (
  * open log folder with shell module
  */
 const handleOpenLogFolder = async () => {
-  const logFolder = app.getPath('logs')
+  const logFile = log.transports.file.getFile().path
+  const logFolder = path.dirname(logFile)
   log.info('Open log folder')
   const err = await shell.openPath(logFolder)
   if (err !== '') {
@@ -82,8 +83,7 @@ const handleReadLastLogs = async (
   _event: IpcMainInvokeEvent,
   lineCount: number
 ): Promise<Log[]> => {
-  const logFolder = app.getPath('logs')
-  const logFile = path.join(logFolder, 'main.log')
+  const logFile = log.transports.file.getFile().path
   let lines = ['']
   try {
     lines = (await readLastLines.read(logFile, lineCount)).split(/\n/)
