@@ -23,7 +23,7 @@ import {
 import { autoUpdater } from 'electron-updater'
 import log, { LogLevel } from 'electron-log'
 import Store from 'electron-store'
-import MenuBuilder from './menu'
+import MenuBuilder from './app/menu'
 import { SaveDataResponse } from './types'
 
 Store.initRenderer()
