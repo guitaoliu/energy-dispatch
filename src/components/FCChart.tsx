@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { VStack, HStack, Select, Text, Spinner } from '@chakra-ui/react'
 import { Chart } from 'react-google-charts'
 
@@ -11,10 +11,20 @@ interface FCChartProps {
 
 const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
   const { dataUpdatingInterval } = useDataUpdatingInterval()
-  const [data, setData] = useState<number[][]>([[0, 0]])
   const [source, setSource] = useState<number>(1)
   const [currentRecord, setCurrentRecord] = useState<DataRecord>(
     fuelCellStates.filter((record) => record.id === source)[0]
+  )
+  const [data, setData] = useState<number[][]>([[0, 0]])
+
+  const fuelCellDataList = useMemo(
+    () =>
+      fuelCellStates.map((record) => ({
+        id: record.id,
+        name: record.name,
+        source: record.source,
+      })),
+    []
   )
 
   useEffect(() => {
@@ -22,9 +32,15 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
     if (selectedRecord !== undefined) {
       setCurrentRecord(selectedRecord)
     }
+  }, [source])
+
+  useEffect(() => {
     const update = setInterval(() => {
-      setData((prevState) =>
-        prevState.length < 20
+      setData((prevState) => {
+        if (prevState[0][0] === 0) {
+          return [[1, currentRecord.value]]
+        }
+        return prevState.length < 20
           ? [
               ...prevState,
               [prevState[prevState.length - 1][0] + 1, currentRecord.value],
@@ -33,10 +49,15 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
               ...prevState.slice(1),
               [prevState[prevState.length - 1][0] + 1, currentRecord.value],
             ]
-      )
+      })
     }, dataUpdatingInterval)
     return () => clearInterval(update)
-  }, [source])
+  }, [currentRecord])
+
+  const handleSourceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSource(Number(event.target.value))
+    setData([[0, 0]])
+  }
 
   return (
     <VStack justifyContent="center" alignItems="center" mt={10}>
@@ -44,15 +65,8 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
         <Text fontSize="xl" mr={2}>
           Please Select Source:
         </Text>
-        <Select
-          w="64"
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-            setSource(Number(event.target.value))
-            setData([[0, 0]])
-          }}
-          defaultValue={source}
-        >
-          {fuelCellStates.map((record) => (
+        <Select w="64" onChange={handleSourceChange} defaultValue={source}>
+          {fuelCellDataList.map((record) => (
             <option
               key={record.id}
               value={record.id}
