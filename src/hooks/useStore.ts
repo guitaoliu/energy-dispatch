@@ -1,14 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import store from '../utils/store'
 import log from '../log'
 
 const useStore = <T>(key: string, defaultValue: T) => {
-  const [state, setState] = useState<T>(store.get(key, defaultValue) as T)
+  const getStore = useCallback(() => {
+    return store.get(key, defaultValue) as T
+  }, [key, defaultValue])
+  const setStore = useCallback(
+    (value: T) => {
+      store.set(key, value)
+    },
+    [key]
+  )
+  const [state, setState] = useState<T>(getStore())
 
   useEffect(() => {
-    store.set(key, state)
-    log.info(`${key} was changed to ${state}`)
+    if (getStore() !== state) {
+      setStore(state)
+      log.info(`${key} was changed to ${state}`)
+    }
   }, [state])
 
   return [state, setState] as const
