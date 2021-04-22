@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import useStore from './useStore'
 
 import { DeviceType } from '../utils/eCan'
-import store from '../store'
 import {
   DEVICE_TYPE,
   DEVICE_INDEX,
@@ -11,41 +10,17 @@ import {
 } from '../constant'
 
 const useUsbCan = () => {
-  const [deviceType, setDeviceType] = useState<DeviceType>(
-    store.get(DEVICE_TYPE, DeviceType.USBCANI) as DeviceType
+  const [deviceType, setDeviceType] = useStore<DeviceType>(
+    DEVICE_TYPE,
+    DeviceType.USBCANI
   )
-  const [deviceIndex, setDeviceIndex] = useState<number>(
-    store.get(DEVICE_INDEX, 0) as number
+  const [deviceIndex, setDeviceIndex] = useStore<number>(DEVICE_INDEX, 0)
+  const [canIndex, setCanIndex] = useStore<number>(CAN_INDEX, 0)
+  const [baudRate, setBaudRate] = useStore<number>(BAUD_RATE, 500)
+  const [fetchingInterval, setFetchingInterval] = useStore<number>(
+    FETCHING_INTERVAL,
+    100
   )
-  const [canIndex, setCanIndex] = useState<number>(
-    store.get(CAN_INDEX, 0) as number
-  )
-  const [baudRate, setBaudRate] = useState<number>(
-    store.get(BAUD_RATE, 500) as number
-  )
-  const [fetchingInterval, setFetchingInterval] = useState<number>(
-    store.get(FETCHING_INTERVAL, 100) as number
-  )
-
-  useEffect(() => {
-    store.set(DEVICE_TYPE, deviceType)
-  }, [deviceType])
-
-  useEffect(() => {
-    store.set(DEVICE_INDEX, deviceIndex)
-  }, [deviceIndex])
-
-  useEffect(() => {
-    store.set(CAN_INDEX, canIndex)
-  }, [canIndex])
-
-  useEffect(() => {
-    store.set(BAUD_RATE, baudRate)
-  }, [baudRate])
-
-  useEffect(() => {
-    store.set(FETCHING_INTERVAL, fetchingInterval)
-  }, [fetchingInterval])
 
   return {
     deviceType,

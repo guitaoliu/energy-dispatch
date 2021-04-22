@@ -51,7 +51,7 @@ export interface FuelCellStatue {
   setPower: React.Dispatch<React.SetStateAction<number>>
 }
 
-const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
+const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [outputVolt, setOutputVolt] = useState<DataRecord>({
     id: 1,
     source: 'Output',
@@ -260,7 +260,13 @@ const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
   })
 
   // Setting control
-  const { deviceType, deviceIndex, canIndex, baudRate } = useUsbCan()
+  const {
+    deviceType,
+    deviceIndex,
+    canIndex,
+    baudRate,
+    fetchingInterval,
+  } = useUsbCan()
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const [isWork, setIsWork] = useState<boolean>(false)
   const [power, setPower] = useState<number>(500)
@@ -410,7 +416,7 @@ const useFuelCell = (initValue = 0, interval = 50): FuelCellStatue => {
       if (isUpdating) {
         updateState()
       }
-    }, interval)
+    }, fetchingInterval)
     return () => clearInterval(update)
   }, [isUpdating])
 
