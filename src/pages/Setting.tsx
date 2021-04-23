@@ -30,6 +30,7 @@ import store from '../utils/store'
 import log from '../log'
 import { DeviceType } from '../lib/eCan'
 import { OPEN_LOG_FOLDER } from '../constant'
+import useDataUpdatingInterval from '../hooks/useDataUpdatingInterval'
 
 const Setting: React.FC = () => {
   const toast = useToast()
@@ -52,6 +53,10 @@ const Setting: React.FC = () => {
   } = useSystemColorMode()
 
   const { colorMode, toggleColorMode, setColorMode } = useColorMode()
+  const {
+    dataUpdatingInterval,
+    setDataUpdatingInterval,
+  } = useDataUpdatingInterval()
 
   const handleResetAllSettings = () => {
     // todo fix reload
@@ -92,9 +97,6 @@ const Setting: React.FC = () => {
               onChange={(value) => setLogLevel(value as LogLevel)}
             />
           </SettingItem>
-          <SettingItem name="Notifications">
-            <Switch size="lg" />
-          </SettingItem>
           <SettingItem name="Log Folder">
             <Button
               color="gray"
@@ -105,6 +107,22 @@ const Setting: React.FC = () => {
             >
               Open
             </Button>
+          </SettingItem>
+          <SettingItem name="Notifications">
+            <Switch size="lg" />
+          </SettingItem>
+          <SettingItem name="Data Updating Interval">
+            <InputGroup size="sm" w={56}>
+              <Input
+                placeholder={dataUpdatingInterval.toString()}
+                textAlign="center"
+                type="number"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setDataUpdatingInterval(Number(event.target.value))
+                }}
+              />
+              <InputRightAddon>ms</InputRightAddon>
+            </InputGroup>
           </SettingItem>
         </SettingCard>
         <SettingCard name="Appearance">

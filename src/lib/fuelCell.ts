@@ -1,11 +1,11 @@
 import ECANVic, {
-  INIT_CONFIG,
   CAN_OBJ,
-  DATA_ARRAY,
-  RESERVED_ARRAY,
   CanStatus,
+  DATA_ARRAY,
   DeviceType,
   getTimingFromBaudRate,
+  INIT_CONFIG,
+  RESERVED_ARRAY,
 } from './eCan'
 import { Log } from '../log'
 
@@ -17,6 +17,10 @@ class FuelCellController {
   canIndex: number
 
   log: Log
+
+  interval: NodeJS.Timeout | undefined
+
+  fetchingInterval: number
 
   outputVolt = 0
 
@@ -82,28 +86,37 @@ class FuelCellController {
     deviceType = DeviceType.USBCANII,
     devIndex = 0,
     canIndex = 0,
-    log: Log
+    log: Log,
+    fetchingInterval: number
   ) {
     this.deviceType = deviceType
     this.devIndex = devIndex
     this.canIndex = canIndex
     this.log = log
+    this.fetchingInterval = fetchingInterval
   }
 
-  initialize(baudRate: number): CanStatus {
-    const openStatus = this.open()
+  async initialize(baudRate: number): Promise<CanStatus> {
+    const openStatus = await this.open()
     if (openStatus !== CanStatus.OK) {
-      this.log.error('Can not connect to USB CAN')
+      this.log.error('Failed to connect to USB CAN')
     }
-    const initStatus = this.init(baudRate)
+    const initStatus = await this.init(baudRate)
     if (initStatus !== CanStatus.OK) {
-      this.log.error('Can not initialize USB CAN')
+      this.log.error('Failed to initialize USB CAN')
     }
-    const startStatus = this.start()
+    const startStatus = await this.start()
     if (startStatus !== CanStatus.OK) {
-      this.log.error('Can not start USB CAN')
+      this.log.error('Failed to start USB CAN')
     }
-    return openStatus && initStatus && startStatus
+    const status = openStatus && initStatus && startStatus
+    if (status === CanStatus.OK) {
+      this.interval = setInterval(async () => {
+        await this.update()
+      }, this.fetchingInterval)
+      this.log.info('Start fetching data')
+    }
+    return status
   }
 
   changeStatus(power: number, isStart: boolean) {
@@ -122,21 +135,22 @@ class FuelCellController {
     this.transmit(0x104, data)
   }
 
-  open(): CanStatus {
+  async open(): Promise<CanStatus> {
     return ECANVic.OpenDevice(this.deviceType, this.devIndex, 0)
   }
 
-  close(): CanStatus {
+  async close(): Promise<CanStatus> {
+    clearInterval(this.fetchingInterval)
     return ECANVic.CloseDevice(this.deviceType, this.devIndex)
   }
 
-  init(
+  async init(
     baudRate: number,
     filterEnabled = false,
     accCode = 0x00000000,
     accMask = 0xffffffff,
     mode = 0
-  ): CanStatus {
+  ): Promise<CanStatus> {
     const { timing0, timing1 } = getTimingFromBaudRate(baudRate)
     const initConfig = new INIT_CONFIG({
       AccCode: accCode,
@@ -155,7 +169,7 @@ class FuelCellController {
     )
   }
 
-  start(): CanStatus {
+  async start(): Promise<CanStatus> {
     return ECANVic.StartCAN(this.deviceType, this.devIndex, this.canIndex)
   }
 
@@ -166,7 +180,7 @@ class FuelCellController {
     remote = false,
     extern = false,
     dataLen = 8
-  ): number {
+  ) {
     const reserved = new RESERVED_ARRAY([0, 0, 0])
     const dataArray = new DATA_ARRAY(data)
     const canObj = new CAN_OBJ({
@@ -178,16 +192,17 @@ class FuelCellController {
       Data: dataArray,
       Reserved: reserved,
     })
-    return ECANVic.Transmit(
+    ECANVic.Transmit.async(
       this.deviceType,
       this.devIndex,
       this.canIndex,
       canObj.ref(),
-      1
+      1,
+      () => {}
     )
   }
 
-  receive(id: number, sendType = 0, remote = false, extern = false): number {
+  async receive(id: number, sendType = 0, remote = false, extern = false) {
     const reserved = new RESERVED_ARRAY([0, 0, 0])
     const data = new DATA_ARRAY([0, 0, 0, 0, 0, 0, 0, 0])
     const canObj = new CAN_OBJ({
@@ -200,19 +215,20 @@ class FuelCellController {
       Reserved: reserved,
     })
     const canObjPtr = canObj.ref()
-    const len = ECANVic.Receive(
+    ECANVic.Receive.async(
       this.deviceType,
       this.devIndex,
       this.canIndex,
       canObjPtr,
       1,
-      10
+      10,
+      async () => {
+        await this.parseData(canObjPtr.deref())
+      }
     )
-    this.parseData(canObjPtr.deref())
-    return len
   }
 
-  parseData(canObj: typeof CAN_OBJ): void {
+  async parseData(canObj: typeof CAN_OBJ): Promise<void> {
     const data = canObj.Data
     switch (canObj.ID) {
       case 0x401:
@@ -264,12 +280,8 @@ class FuelCellController {
     }
   }
 
-  update(): CanStatus {
-    const rec = this.receive(0x16)
-    if (rec) {
-      return CanStatus.ERR
-    }
-    return CanStatus.OK
+  async update() {
+    await this.receive(0x16)
   }
 }
 
