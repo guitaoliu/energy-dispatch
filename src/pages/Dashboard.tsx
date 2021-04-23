@@ -29,6 +29,7 @@ import useFuelCell from '../hooks/useFuelCell'
 import { CanStatus } from '../lib/eCan'
 import { Log } from '../types'
 import { READ_LATEST_LOGS } from '../constant'
+import log from '../log'
 
 const Dashboard: React.FC = () => {
   const { err: FCErr, states: FCStates } = useFuelCell()
@@ -88,11 +89,11 @@ const Dashboard: React.FC = () => {
   const handleReadLogNumsChange = (value: number) => setLogCount(value)
 
   useEffect(() => {
-    handleReadLog()
+    handleReadLog().catch((error) => log.error(error.toString()))
   }, [])
 
   return (
-    <VStack my={3} spacing={4} h="full">
+    <VStack my={3} spacing={4} h="full" justifyContent="center">
       <HStack w="90%">
         <Text fontSize="2xl" fontWeight="semibold">
           Overview
@@ -191,14 +192,14 @@ const Dashboard: React.FC = () => {
               <Text>There is no log currently.</Text>
             </VStack>
           ) : (
-            logs.map((log, idx) => (
-              <VStack w="full" key={log.id}>
+            logs.map((l: Log, idx: number) => (
+              <VStack w="full" key={l.id}>
                 {idx !== 0 && <Divider size="sm" />}
-                <HStack w="98%" key={log.id} fontSize="sm">
-                  <Text w={16}>{log.level.toUpperCase()}</Text>
-                  <Text>{log.content}</Text>
+                <HStack w="98%" key={l.id} fontSize="sm">
+                  <Text w={16}>{l.level.toUpperCase()}</Text>
+                  <Text>{l.content}</Text>
                   <Spacer />
-                  <Text>{new Date(log.time).toLocaleString()}</Text>
+                  <Text>{new Date(l.time).toLocaleString()}</Text>
                 </HStack>
               </VStack>
             ))

@@ -1,37 +1,49 @@
 import React from 'react'
 
-import { Table, Thead, Tbody, TableCaption, Tr, Th, Td } from '@chakra-ui/react'
+import {
+  Table,
+  Thead,
+  Tbody,
+  TableCaption,
+  Tr,
+  Th,
+  Td,
+  useBreakpointValue,
+} from '@chakra-ui/react'
 
-import { DataRecord } from '../../types/fuelCell'
+import { DataRecord } from '../../types'
 
 export interface DataTableProps {
   name: string
   data: DataRecord[]
 }
 
-const DataTable = ({ name, data }: DataTableProps): JSX.Element => (
-  <Table variant="simple" size="sm" colorScheme="blue">
-    <TableCaption placement="top">{name}</TableCaption>
-    <Thead>
-      <Tr>
-        <Th>Data</Th>
-        <Th isNumeric>Value</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
-      {data.map((d) => (
-        <Tr key={d.id}>
-          <Td>{d.name}</Td>
-          <Td isNumeric>
-            {d.unit === undefined
-              ? d.value.toFixed(0)
-              : `${d.value.toFixed(d.value === 0 ? 0 : 3)} ${d?.unit}`}
-          </Td>
+const DataTable = ({ name, data }: DataTableProps): JSX.Element => {
+  const size = useBreakpointValue({ md: 'sm', '2xl': 'md' })
+  return (
+    <Table variant="simple" size={size} colorScheme="blue">
+      <TableCaption placement="top">{name}</TableCaption>
+      <Thead>
+        <Tr>
+          <Th>Data</Th>
+          <Th isNumeric>Value</Th>
         </Tr>
-      ))}
-    </Tbody>
-  </Table>
-)
+      </Thead>
+      <Tbody>
+        {data.map((d) => (
+          <Tr key={d.id}>
+            <Td>{d.name}</Td>
+            <Td isNumeric>
+              {d.unit === undefined
+                ? d.value.toFixed(0)
+                : `${d.value.toFixed(d.value === 0 ? 0 : 3)} ${d?.unit}`}
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  )
+}
 
 const dataTablePropsAreEqual = (
   prevProps: DataTableProps,

@@ -3,7 +3,7 @@ import React from 'react'
 import { Grid, GridItem } from '@chakra-ui/react'
 
 import DataTable from './DataTable'
-import { DataRecord } from '../../types/fuelCell'
+import { DataRecord } from '../../types'
 
 export interface DataTableGridProps {
   tablesData: DataRecord[]
@@ -43,8 +43,8 @@ const DataTableGroup = ({ tablesData }: DataTableGridProps): JSX.Element => {
     <Grid
       h="6initValue%"
       maxW="8initValue%"
-      templateRows={{ base: 'repeat(2, 1fr)', '2xl': 'repeat(3, 1fr)' }}
-      templateColumns={{ base: 'repeat(3, 1fr)', '2xl': 'repeat(2, 1fr)' }}
+      templateRows="repeat(2, 1fr)"
+      templateColumns="repeat(3, 1fr)"
       gap={1}
     >
       <GridItem>
