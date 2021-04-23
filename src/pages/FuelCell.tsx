@@ -43,6 +43,7 @@ import useFuelCell from '../hooks/useFuelCell'
 import timeToString from '../utils/timeToString'
 import { CanStatus, DeviceType } from '../lib/eCan'
 import { SAVE_DATA } from '../constant'
+import log from '../log'
 
 const FuelCell: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -72,6 +73,7 @@ const FuelCell: React.FC = () => {
   } = useDisclosure()
 
   const handleSave = async () => {
+    log.info(`Save fuel cell current data`)
     const data = Object.values(fuelCellStates)
     const resp = await ipcRenderer.invoke(
       SAVE_DATA,
@@ -97,9 +99,15 @@ const FuelCell: React.FC = () => {
     }
   }
 
-  const handleToggleUpdating = () => setIsUpdating(!isUpdating)
+  const handleToggleUpdating = () => {
+    setIsUpdating(!isUpdating)
+    log.info(`${isUpdating ? 'Start' : 'Stop'} read fuel data`)
+  }
 
-  const handleToggleFC = () => setIsWork(!isWork)
+  const handleToggleFC = () => {
+    setIsWork(!isWork)
+    log.info(`Fuel cell toggle to ${isWork ? 'working' : 'stop'}`)
+  }
 
   useEffect(() => {
     const checkErr = setInterval(() => {
@@ -177,6 +185,7 @@ const FuelCell: React.FC = () => {
               onClick={() => {
                 setIsUpdating(false)
                 chartOnOpen()
+                log.info(`Open fuel cell data chart.`)
               }}
             />
             <IconButton
