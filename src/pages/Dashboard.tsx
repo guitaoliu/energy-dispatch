@@ -22,7 +22,7 @@ import {
 import { GoFile, GoInfo } from 'react-icons/go'
 import { ipcRenderer } from 'electron'
 
-import Spotlight from '../components/Spotlight/Spotlight'
+import { Spotlight } from '../components/Spotlight'
 import InfoCard from '../components/InfoCard'
 
 import useFuelCell from '../hooks/useFuelCell'
