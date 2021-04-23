@@ -5,6 +5,7 @@ import FuelCellController from '../lib/fuelCell'
 import { DataRecord } from '../types'
 import { CanStatus, DeviceType } from '../lib/eCan'
 import useUsbCan from './useUsbCan'
+import useDataUpdatingInterval from './useDataUpdatingInterval'
 
 export interface FuelCellData {
   outputVolt: DataRecord
@@ -268,12 +269,20 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
     baudRate,
     fetchingInterval,
   } = useUsbCan()
+  const { dataUpdatingInterval } = useDataUpdatingInterval()
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const [isWork, setIsWork] = useState<boolean>(false)
   const [power, setPower] = useState<number>(500)
 
   const FCController = useMemo(
-    () => new FuelCellController(deviceType, deviceIndex, canIndex, log),
+    () =>
+      new FuelCellController(
+        deviceType,
+        deviceIndex,
+        canIndex,
+        log,
+        fetchingInterval
+      ),
     [deviceIndex, deviceType, canIndex]
   )
 
@@ -281,7 +290,6 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   const [err, setErr] = useState<CanStatus>(CanStatus.OK)
 
   const updateState = () => {
-    FCController.update()
     setOutputCurrent((prevState) => ({
       ...prevState,
       value: FCController.outputCurrent,
@@ -398,17 +406,21 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
 
   // Initialize CAN bus while rendering the page
   useEffect(() => {
-    setErr(FCController.initialize(baudRate))
+    FCController.initialize(baudRate)
+      .then((value) => setErr(value))
+      .catch((error) => log.error(error.toString()))
     return () => {
       FCController.close()
+        .then((value) => setErr(value))
+        .catch((error) => log.error(error.toString()))
     }
-  }, [])
+  }, [FCController, baudRate])
 
   // Listen to demand power and start state change
   useEffect(() => {
     FCController.changeStatus(power, isWork)
     if (err === CanStatus.OK) {
-      log.info(`Fuel Cell is ${isWork ? 'opened' : 'closed'}`)
+      log.info(`Fuel Cell is ${isWork ? 'working' : 'closed'}`)
       if (isWork) {
         log.info(`Change fuel cell with demand ${power}`)
       }
@@ -421,14 +433,9 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
       if (isUpdating) {
         updateState()
       }
-    }, fetchingInterval)
+    }, dataUpdatingInterval)
     return () => clearInterval(update)
   }, [isUpdating])
-
-  // Listen to device type change
-  useEffect(() => {
-    FCController.deviceType = deviceType
-  }, [deviceType])
 
   return {
     states: {
