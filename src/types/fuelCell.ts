@@ -1,3 +1,6 @@
+/**
+ * All data names from fuel cell
+ */
 export type FuelCellData =
   | 'CellOutputVolt'
   | 'CellOutputCurrent'
@@ -14,6 +17,7 @@ export type FuelCellData =
   | 'DCDCVolt'
   | 'DCDCCurrent'
   | 'DCDCPower'
+  | 'DCDCTemperature'
   | 'LoadVolt'
   | 'LoadCurrent'
   | 'ConcentrationSystemRoom'
@@ -28,6 +32,9 @@ export type FuelCellData =
   | 'SystemRuntimeMinute'
   | 'SystemRuntimeSecond'
 
+/**
+ * data type that used to construct table
+ */
 export type DataRecord = {
   id: number
   source: string
