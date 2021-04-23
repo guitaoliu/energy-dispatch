@@ -25,6 +25,7 @@ import { ipcRenderer } from 'electron'
 import { Spotlight } from '../components/Spotlight'
 import InfoCard from '../components/InfoCard'
 
+import useDataUpdatingInterval from '../hooks/useDataUpdatingInterval'
 import useFuelCell from '../hooks/useFuelCell'
 import { CanStatus } from '../lib/eCan'
 import { Log } from '../types'
@@ -33,6 +34,7 @@ import log from '../log'
 
 const Dashboard: React.FC = () => {
   const { err: FCErr, states: FCStates } = useFuelCell()
+  const { dataUpdatingInterval } = useDataUpdatingInterval()
   const [logs, setLogs] = useState<Log[]>([])
   const [logCount, setLogCount] = useState<number>(10)
 
@@ -65,7 +67,7 @@ const Dashboard: React.FC = () => {
         fuelCell.outputPower = FCStates.outputPower.value
         return [fuelCell, transformer]
       })
-    }, 500)
+    }, dataUpdatingInterval)
     return () => clearInterval(update)
   }, [FCErr, FCStates])
 

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
-
 import { VStack, HStack, Select, Text, Spinner } from '@chakra-ui/react'
 import { Chart } from 'react-google-charts'
-import { DataRecord } from '../types/fuelCell'
+
+import useDataUpdatingInterval from '../hooks/useDataUpdatingInterval'
+import { DataRecord } from '../types'
 
 interface FCChartProps {
   fuelCellStates: DataRecord[]
 }
 
 const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
+  const { dataUpdatingInterval } = useDataUpdatingInterval()
   const [data, setData] = useState<number[][]>([[0, 0]])
   const [source, setSource] = useState<number>(1)
   const [currentRecord, setCurrentRecord] = useState<DataRecord>(
@@ -32,7 +34,7 @@ const FCChart = ({ fuelCellStates }: FCChartProps): JSX.Element => {
               [prevState[prevState.length - 1][0] + 1, currentRecord.value],
             ]
       )
-    }, 500)
+    }, dataUpdatingInterval)
     return () => clearInterval(update)
   }, [source])
 
