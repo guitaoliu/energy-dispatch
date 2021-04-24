@@ -7,6 +7,7 @@ import readLastLines from 'read-last-lines'
 import { Log, SaveDataResponse } from '../types'
 import {
   CHANGE_LOG_LEVEL,
+  CLEAR_LOG,
   LOG,
   OPEN_LOG_FOLDER,
   READ_LATEST_LOGS,
@@ -87,7 +88,6 @@ const handleLog = (
  */
 const handleChangeLogLevel = (_event: IpcMainInvokeEvent, level: LogLevel) => {
   log.transports.file.level = level
-  log.info(`Set log level to ${level}`)
 }
 
 /**
@@ -123,6 +123,12 @@ const handleReadLastLogs = async (
 }
 
 /**
+ * Clear log
+ */
+const handleClearLog = async (): Promise<boolean> =>
+  log.transports.file.getFile().clear()
+
+/**
  * register ipc handlers
  */
 export default () => {
@@ -130,5 +136,6 @@ export default () => {
   ipcMain.handle(OPEN_LOG_FOLDER, handleOpenLogFolder)
   ipcMain.handle(LOG, handleLog)
   ipcMain.handle(CHANGE_LOG_LEVEL, handleChangeLogLevel)
+  ipcMain.handle(CLEAR_LOG, handleClearLog)
   ipcMain.handle(READ_LATEST_LOGS, handleReadLastLogs)
 }

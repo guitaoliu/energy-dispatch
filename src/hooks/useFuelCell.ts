@@ -420,7 +420,6 @@ const useFuelCell = (initValue = 0): FuelCellStatue => {
   useEffect(() => {
     FCController.changeStatus(power, isWork)
     if (err === CanStatus.OK) {
-      log.info(`Fuel Cell is ${isWork ? 'working' : 'closed'}`)
       if (isWork) {
         log.info(`Change fuel cell with demand ${power}`)
       }

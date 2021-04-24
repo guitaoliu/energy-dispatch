@@ -4,6 +4,13 @@ import {
   Circle,
   Divider,
   HStack,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -17,6 +24,8 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react'
 import { GoFile, GoInfo } from 'react-icons/go'
@@ -29,10 +38,13 @@ import useDataUpdatingInterval from '../hooks/useDataUpdatingInterval'
 import useFuelCell from '../hooks/useFuelCell'
 import { CanStatus } from '../lib/eCan'
 import { Log } from '../types'
-import { READ_LATEST_LOGS } from '../constant'
+import { CLEAR_LOG, READ_LATEST_LOGS } from '../constant'
 import log from '../log'
 
 const Dashboard: React.FC = () => {
+  const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   const { err: FCErr, states: FCStates } = useFuelCell()
   const { dataUpdatingInterval } = useDataUpdatingInterval()
   const [logs, setLogs] = useState<Log[]>([])
@@ -86,6 +98,27 @@ const Dashboard: React.FC = () => {
   const handleReadLog = async () => {
     const lastLogs = await ipcRenderer.invoke(READ_LATEST_LOGS, logCount)
     setLogs(lastLogs)
+  }
+
+  const handleClearLog = async (): Promise<void> => {
+    const status = (await ipcRenderer.invoke(CLEAR_LOG)) as boolean
+    if (status) {
+      toast({
+        title: 'Done!',
+        description: 'Success cleared log',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+    } else {
+      toast({
+        title: 'Error!',
+        description: 'Cannot clear log',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
 
   const handleReadLogNumsChange = (value: number) => setLogCount(value)
@@ -180,6 +213,50 @@ const Dashboard: React.FC = () => {
             >
               Read
             </Button>
+            <Button
+              letterSpacing="wider"
+              size="sm"
+              colorScheme="red"
+              variant="outline"
+              onClick={onOpen}
+            >
+              Clear
+            </Button>
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Attention!</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Text>
+                    This operation will cause all logs to be deleted immediately
+                    and cannot be retrieved.
+                  </Text>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="blue"
+                    mr={3}
+                    variant="outline"
+                    onClick={onClose}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => {
+                      handleClearLog().catch((error) => {
+                        log.error(error)
+                      })
+                      handleReadLog()
+                      onClose()
+                    }}
+                  >
+                    Confirm
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </>
         }
       >
