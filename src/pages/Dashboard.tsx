@@ -24,6 +24,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
   useDisclosure,
   useToast,
   VStack,
@@ -43,6 +44,7 @@ import log from '../log'
 
 const Dashboard: React.FC = () => {
   const toast = useToast()
+  const tableHeaderBgColor = useColorModeValue('white', 'gray.600')
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { err: FCErr, states: FCStates } = useFuelCell()
@@ -74,10 +76,10 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const update = setInterval(() => {
       setDevices(() => {
-        const [fuelCell, transformer] = devices
+        const [fuelCell, ...others] = devices
         fuelCell.online = FCErr === CanStatus.OK
         fuelCell.outputPower = FCStates.outputPower.value
-        return [fuelCell, transformer]
+        return [fuelCell, ...others]
       })
     }, dataUpdatingInterval)
     return () => clearInterval(update)
@@ -146,16 +148,26 @@ const Dashboard: React.FC = () => {
           <Table colorScheme="blue" size="sm">
             <Thead>
               <Tr zIndex="sticky">
-                <Th position="sticky" top={0}>
+                <Th bgColor={tableHeaderBgColor} position="sticky" top={0}>
                   Devices
                 </Th>
-                <Th position="sticky" top={0}>
+                <Th bgColor={tableHeaderBgColor} position="sticky" top={0}>
                   Online Status
                 </Th>
-                <Th position="sticky" top={0} isNumeric>
+                <Th
+                  bgColor={tableHeaderBgColor}
+                  position="sticky"
+                  top={0}
+                  isNumeric
+                >
                   Output Power
                 </Th>
-                <Th position="sticky" top={0} isNumeric>
+                <Th
+                  bgColor={tableHeaderBgColor}
+                  position="sticky"
+                  top={0}
+                  isNumeric
+                >
                   Consume Power
                 </Th>
               </Tr>
