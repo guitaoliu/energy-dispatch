@@ -5,7 +5,13 @@ import path from 'path'
 import readLastLines from 'read-last-lines'
 
 import { Log, SaveDataResponse } from '../types'
-import { LOG, OPEN_LOG_FOLDER, READ_LATEST_LOGS, SAVE_DATA } from '../constant'
+import {
+  CHANGE_LOG_LEVEL,
+  LOG,
+  OPEN_LOG_FOLDER,
+  READ_LATEST_LOGS,
+  SAVE_DATA,
+} from '../constant'
 
 /**
  * save data to designated file path
@@ -75,6 +81,16 @@ const handleLog = (
 }
 
 /**
+ * change log level
+ * @param _event
+ * @param level
+ */
+const handleChangeLogLevel = (_event: IpcMainInvokeEvent, level: LogLevel) => {
+  log.transports.file.level = level
+  log.info(`Set log level to ${level}`)
+}
+
+/**
  * read log file last lines
  * @param _event IpcMainInvokeEvent
  * @param lineCount read lines
@@ -113,5 +129,6 @@ export default () => {
   ipcMain.handle(SAVE_DATA, handleSaveDate)
   ipcMain.handle(OPEN_LOG_FOLDER, handleOpenLogFolder)
   ipcMain.handle(LOG, handleLog)
+  ipcMain.handle(CHANGE_LOG_LEVEL, handleChangeLogLevel)
   ipcMain.handle(READ_LATEST_LOGS, handleReadLastLogs)
 }
