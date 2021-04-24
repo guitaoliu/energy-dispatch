@@ -101,12 +101,12 @@ const FuelCell: React.FC = () => {
 
   const handleToggleUpdating = () => {
     setIsUpdating(!isUpdating)
-    log.info(`${isUpdating ? 'Start' : 'Stop'} read fuel data`)
+    log.info(`${isUpdating ? 'Stop' : 'Start'} read fuel data`)
   }
 
   const handleToggleFC = () => {
     setIsWork(!isWork)
-    log.info(`Fuel cell toggle to ${isWork ? 'working' : 'stop'}`)
+    log.info(`Fuel cell toggle to ${isWork ? 'stop' : 'working'}`)
   }
 
   useEffect(() => {
@@ -192,8 +192,52 @@ const FuelCell: React.FC = () => {
               aria-label="USB CAN Settings"
               colorScheme="gray"
               icon={<Icon as={MdSettings} boxSize={5} />}
-              onClick={onOpen}
+              onClick={() => {
+                onOpen()
+                log.debug(`Open fuel cell setting.`)
+              }}
             />
+            <Modal
+              isOpen={isOpen}
+              onClose={() => {
+                onClose()
+                log.debug(`Closed fuel cell setting.`)
+              }}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>USB CAN Settings</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <HStack w="full">
+                    <Text>Device Type:</Text>
+                    <Spacer />
+                    <Text> {DeviceType[deviceType].toString()}</Text>
+                  </HStack>
+                  <HStack w="full">
+                    <Text>Device Index:</Text>
+                    <Spacer />
+                    <Text> {deviceIndex}</Text>
+                  </HStack>
+                  <HStack w="full">
+                    <Text>CAN Index:</Text>
+                    <Spacer />
+                    <Text> {canIndex}</Text>
+                  </HStack>
+                  <HStack w="full">
+                    <Text>CAN Baud Rate:</Text>
+                    <Spacer />
+                    <Text> {baudRate}</Text>
+                  </HStack>
+                </ModalBody>
+                <ModalFooter>
+                  <Text fontWeight="bold">
+                    Please go to the settings page to change the relevant
+                    configuration.
+                  </Text>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </HStack>
           <HStack justifyContent="center" alignItems="center">
             <Text fontSize="xl">Fuel cell start-up time:</Text>
@@ -222,41 +266,7 @@ const FuelCell: React.FC = () => {
           </DrawerContent>
         </DrawerOverlay>
       </Drawer>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>USB CAN Settings</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <HStack w="full">
-              <Text>Device Type:</Text>
-              <Spacer />
-              <Text> {DeviceType[deviceType].toString()}</Text>
-            </HStack>
-            <HStack w="full">
-              <Text>Device Index:</Text>
-              <Spacer />
-              <Text> {deviceIndex}</Text>
-            </HStack>
-            <HStack w="full">
-              <Text>CAN Index:</Text>
-              <Spacer />
-              <Text> {canIndex}</Text>
-            </HStack>
-            <HStack w="full">
-              <Text>CAN Baud Rate:</Text>
-              <Spacer />
-              <Text> {baudRate}</Text>
-            </HStack>
-          </ModalBody>
-          <ModalFooter>
-            <Text fontWeight="bold">
-              Please go to the settings page to change the relevant
-              configuration.
-            </Text>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+
       <Tooltip
         hasArrow
         bg="cyan.600"
