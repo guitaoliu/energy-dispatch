@@ -88,6 +88,7 @@ const FuelCell: React.FC = () => {
         duration: 3000,
         isClosable: true,
       })
+      log.info('Save failed')
     } else {
       toast({
         title: 'Done!',
@@ -96,6 +97,7 @@ const FuelCell: React.FC = () => {
         duration: 3000,
         isClosable: true,
       })
+      log.info('Successfully saved')
     }
   }
 
@@ -119,13 +121,17 @@ const FuelCell: React.FC = () => {
           duration: 3000,
           isClosable: true,
         })
+        log.debug('Something went wrong in the initialization of fuel cell.')
       }
     }, 5000)
     return () => clearInterval(checkErr)
   }, [])
 
   useEffect(() => {
-    return setIsUpdating(false)
+    return () => {
+      setIsUpdating(false)
+      log.debug('Stop page updating')
+    }
   }, [])
 
   return (
@@ -253,7 +259,10 @@ const FuelCell: React.FC = () => {
       <Drawer
         isOpen={chartIsOpen}
         placement="right"
-        onClose={chartOnClose}
+        onClose={() => {
+          chartOnClose()
+          log.debug('Close fuel cell chart')
+        }}
         size="xl"
       >
         <DrawerOverlay>
@@ -266,7 +275,6 @@ const FuelCell: React.FC = () => {
           </DrawerContent>
         </DrawerOverlay>
       </Drawer>
-
       <Tooltip
         hasArrow
         bg="cyan.600"

@@ -97,6 +97,7 @@ const Dashboard: React.FC = () => {
 
   const handleReadLog = async () => {
     const lastLogs = await ipcRenderer.invoke(READ_LATEST_LOGS, logCount)
+    log.debug(`Read ${logCount} lines of logs.`)
     setLogs(lastLogs)
   }
 
@@ -238,7 +239,10 @@ const Dashboard: React.FC = () => {
                     colorScheme="blue"
                     mr={3}
                     variant="outline"
-                    onClick={onClose}
+                    onClick={() => {
+                      onClose()
+                      log.debug('Cancel clear log.')
+                    }}
                   >
                     Cancel
                   </Button>
@@ -248,7 +252,9 @@ const Dashboard: React.FC = () => {
                       handleClearLog().catch((error) => {
                         log.error(error)
                       })
-                      handleReadLog()
+                      handleReadLog().catch((error) => {
+                        log.error(error)
+                      })
                       onClose()
                     }}
                   >
