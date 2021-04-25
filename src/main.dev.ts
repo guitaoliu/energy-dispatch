@@ -15,6 +15,7 @@ import { app, BrowserWindow, shell } from 'electron'
 import Store from 'electron-store'
 import MenuBuilder from './app/menu'
 import ipcRegister from './app/ipcRegister'
+import { setLogLevel } from './app/utils'
 
 Store.initRenderer()
 
@@ -136,7 +137,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-app.whenReady().then(createWindow).then(ipcRegister).catch(console.log)
+app
+  .whenReady()
+  .then(setLogLevel)
+  .then(ipcRegister)
+  .then(createWindow)
+  .catch(console.log)
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
