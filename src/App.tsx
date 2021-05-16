@@ -6,6 +6,7 @@ import {
   TabPanels,
   TabPanel,
   Text,
+  Box,
   VStack,
   Collapse,
   Spacer,
@@ -45,8 +46,8 @@ const App: React.FC = () => {
           color="white"
           textAlign="center"
           textTransform="uppercase"
-          fontSize="2xl"
-          fontWeight="bold"
+          fontSize={28}
+          fontWeight="semibold"
           letterSpacing="wider"
           onClick={() => {
             ipcRenderer
@@ -64,7 +65,7 @@ const App: React.FC = () => {
         >
           Energy Dispatch
         </Text>
-        <Divider color="white" borderBottomWidth="2px" opacity="0.8" />
+        <Divider color="white" />
         <TabItem leftIcon={GoDashboard} text="Dashboard" />
         <TabItem
           leftIcon={GoDeviceDesktop}
@@ -90,11 +91,22 @@ const App: React.FC = () => {
           color="white"
           textAlign="center"
           mt={4}
-          mb={2}
           fontSize="lg"
           fontWeight="semibold"
           letterSpacing="wider"
         >
+          Made by{' '}
+          <Box
+            display="inline"
+            onClick={() => {
+              ipcRenderer.invoke(OPEN_EXTERNAL_URL, 'https://gtliu.com')
+            }}
+            _hover={{ cursor: 'pointer' }}
+          >
+            Guitao Liu
+          </Box>
+        </Text>
+        <Text color="white" textAlign="center" mb={2} fontSize="md">
           © Xi&#39;an Jiaotong University
         </Text>
       </TabList>
