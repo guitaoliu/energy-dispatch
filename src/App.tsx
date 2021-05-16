@@ -17,6 +17,7 @@ import {
 import { GoDashboard, GoSettings, GoDeviceDesktop } from 'react-icons/go'
 import { GiCarBattery } from 'react-icons/gi'
 import { BsFillLightningFill } from 'react-icons/bs'
+import { ipcRenderer } from 'electron'
 
 import TabItem from './components/TabItem'
 
@@ -27,15 +28,43 @@ import Setting from './pages/Setting'
 import ACDC from './pages/ADDC'
 
 import useColorSyncSystem from './hooks/useColorSyncSystem'
+import { OPEN_EXTERNAL_URL } from './constant'
+import log from './log'
 
 const App: React.FC = () => {
   const { isOpen, onToggle } = useDisclosure()
   const bgColor = useColorModeValue('blue.500', 'whiteAlpha.300')
-
   useColorSyncSystem()
+
   return (
     <Tabs variant="unstyled" isLazy orientation="vertical" h="full">
       <TabList py={3} bg={bgColor} w="64">
+        <Text
+          my={2}
+          pb={2}
+          color="white"
+          textAlign="center"
+          textTransform="uppercase"
+          fontSize="2xl"
+          fontWeight="bold"
+          letterSpacing="wider"
+          onClick={() => {
+            ipcRenderer
+              .invoke(
+                OPEN_EXTERNAL_URL,
+                'https://github.com/guitaoliu/energy-dispatch'
+              )
+              .catch((e) => {
+                log.error(e.value)
+              })
+          }}
+          _hover={{
+            cursor: 'pointer',
+          }}
+        >
+          Energy Dispatch
+        </Text>
+        <Divider color="white" borderBottomWidth="2px" opacity="0.8" />
         <TabItem leftIcon={GoDashboard} text="Dashboard" />
         <TabItem
           leftIcon={GoDeviceDesktop}

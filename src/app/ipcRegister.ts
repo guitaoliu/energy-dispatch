@@ -9,6 +9,7 @@ import {
   CHANGE_LOG_LEVEL,
   CLEAR_LOG,
   LOG,
+  OPEN_EXTERNAL_URL,
   OPEN_LOG_FOLDER,
   READ_LATEST_LOGS,
   SAVE_DATA,
@@ -129,6 +130,17 @@ const handleClearLog = async (): Promise<boolean> =>
   log.transports.file.getFile().clear()
 
 /**
+ * Open external url in default browser
+ */
+const handleOpenExternalUrl = async (
+  _event: IpcMainInvokeEvent,
+  url: string
+): Promise<void> => {
+  log.debug(`Open ${url}`)
+  await shell.openExternal(url)
+}
+
+/**
  * register ipc handlers
  */
 export default () => {
@@ -138,4 +150,5 @@ export default () => {
   ipcMain.handle(CHANGE_LOG_LEVEL, handleChangeLogLevel)
   ipcMain.handle(CLEAR_LOG, handleClearLog)
   ipcMain.handle(READ_LATEST_LOGS, handleReadLastLogs)
+  ipcMain.handle(OPEN_EXTERNAL_URL, handleOpenExternalUrl)
 }
