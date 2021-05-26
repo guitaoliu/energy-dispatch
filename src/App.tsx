@@ -18,15 +18,17 @@ import {
 import { GoDashboard, GoSettings, GoDeviceDesktop } from 'react-icons/go'
 import { GiCarBattery } from 'react-icons/gi'
 import { BsFillLightningFill } from 'react-icons/bs'
+import { MdDeviceHub } from 'react-icons/md'
 import { ipcRenderer } from 'electron'
 
 import TabItem from './components/TabItem'
 
-import FuelCell from './pages/FuelCell'
 import Dashboard from './pages/Dashboard'
 import Devices from './pages/Devices'
-import Setting from './pages/Setting'
+import FuelCell from './pages/FuelCell'
 import ACDC from './pages/ADDC'
+import GeneralUsbCan from './pages/GeneralUsbCan'
+import Setting from './pages/Setting'
 
 import useColorSyncSystem from './hooks/useColorSyncSystem'
 import { OPEN_EXTERNAL_URL } from './constant'
@@ -82,6 +84,7 @@ const App: React.FC = () => {
           >
             <TabItem leftIcon={GiCarBattery} text="Fuel Cell" isSub />
             <TabItem leftIcon={BsFillLightningFill} text="AC/DC" isSub />
+            <TabItem leftIcon={MdDeviceHub} text="USB CAN" isSub />
           </VStack>
         </Collapse>
         <TabItem leftIcon={GoSettings} text="Setting" />
@@ -122,6 +125,9 @@ const App: React.FC = () => {
         </TabPanel>
         <TabPanel h="full">
           <ACDC />
+        </TabPanel>
+        <TabPanel h="full">
+          <GeneralUsbCan />
         </TabPanel>
         <TabPanel h="full">
           <Setting />
