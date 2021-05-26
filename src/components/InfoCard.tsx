@@ -10,16 +10,17 @@ import {
 
 export interface InfoCardProps {
   name: string
+  width?: string
   icon?: React.ElementType
   topRight?: React.ReactNode
   children: React.ReactNode
 }
 
-const InfoCard = ({ name, icon, topRight, children }: InfoCardProps) => {
+const InfoCard = ({ name, width, icon, topRight, children }: InfoCardProps) => {
   const cardColor = useColorModeValue('white', 'whiteAlpha.300')
   return (
     <VStack
-      w="90%"
+      w={width ?? '90%'}
       p={3}
       justifyContent="center"
       alignItems="center"
