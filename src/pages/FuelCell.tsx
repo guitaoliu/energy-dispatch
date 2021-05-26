@@ -44,6 +44,7 @@ import timeToString from '../utils/timeToString'
 import { CanStatus, DeviceType } from '../lib/eCan'
 import { SAVE_DATA } from '../constant'
 import log from '../log'
+import parseBaudRate from '../utils/parseBaudRate'
 
 const FuelCell: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -218,22 +219,22 @@ const FuelCell: React.FC = () => {
                   <HStack w="full">
                     <Text>Device Type:</Text>
                     <Spacer />
-                    <Text> {DeviceType[deviceType].toString()}</Text>
+                    <Text>{DeviceType[deviceType].toString()}</Text>
                   </HStack>
                   <HStack w="full">
                     <Text>Device Index:</Text>
                     <Spacer />
-                    <Text> {deviceIndex}</Text>
+                    <Text>{deviceIndex}</Text>
                   </HStack>
                   <HStack w="full">
                     <Text>CAN Index:</Text>
                     <Spacer />
-                    <Text> {canIndex}</Text>
+                    <Text>{canIndex}</Text>
                   </HStack>
                   <HStack w="full">
                     <Text>CAN Baud Rate:</Text>
                     <Spacer />
-                    <Text> {baudRate}</Text>
+                    <Text>{parseBaudRate(baudRate)}</Text>
                   </HStack>
                 </ModalBody>
                 <ModalFooter>
