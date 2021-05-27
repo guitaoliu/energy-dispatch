@@ -24,7 +24,7 @@ import InfoCard from '../components/InfoCard'
 import useUsbCan from '../hooks/useUsbCan'
 import { DeviceType } from '../lib/eCan'
 import parseBaudRate from '../utils/parseBaudRate'
-import useUsbCanData, { UsbCanDataType } from '../hooks/useUsbCanData'
+import usbCanDemo, { UsbCanDataType } from '../hooks/useUsbCanData'
 
 const GeneralUsbCan = () => {
   const toast = useToast()
@@ -37,7 +37,7 @@ const GeneralUsbCan = () => {
     fetchingInterval,
   } = useUsbCan()
 
-  const usbCanData = useUsbCanData()
+  const usbCanData = usbCanDemo
   const [testLine, setTestLine] = useState<number>(0)
 
   const [frameId, setFrameId] = useState<number>(0)
