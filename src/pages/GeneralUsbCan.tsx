@@ -157,7 +157,7 @@ const GeneralUsbCan = () => {
           </Table>
         </VStack>
       </InfoCard>
-      <VStack w="80">
+      <VStack w="80" spacing={5}>
         <InfoCard
           name="Control"
           width="full"
@@ -173,7 +173,7 @@ const GeneralUsbCan = () => {
             </Button>
           }
         >
-          <VStack alignItems="flex-start">
+          <VStack alignItems="flex-start" py={3}>
             <Text>Data Frame Configuration</Text>
             <HStack w="full">
               <Text>ID:</Text>
@@ -206,7 +206,7 @@ const GeneralUsbCan = () => {
           </VStack>
         </InfoCard>
         <InfoCard name="USB CAN Settings" width="full">
-          <VStack w="full">
+          <VStack w="full" py={3} px={1}>
             <HStack w="full">
               <Text>Device Type:</Text>
               <Spacer />
