@@ -39,6 +39,30 @@
       "package.json"
     ],
     "afterSign": ".erb/scripts/Notarize.js",
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "type": "distribution",
+      "hardenedRuntime": true,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 129,
+          "y": 219
+        },
+        {
+          "x": 409,
+          "y": 219,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
     "win": {
       "target": [
         "nsis"
